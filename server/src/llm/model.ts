@@ -1,5 +1,5 @@
 import { ChatOpenAI } from "@langchain/openai";
-import type { Env } from "../index.js";
+import type { Env } from "@/index";
 
 /** 创建 chat model */
 export function createChatModel(env: Env) {

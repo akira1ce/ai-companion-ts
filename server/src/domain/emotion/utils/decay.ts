@@ -1,4 +1,4 @@
-import { EmotionContext } from "./type";
+import { EmotionContext } from "../type";
 
 // 情绪强度半衰期（毫秒）—— 不同情绪衰减速度不同
 const HALF_LIFE_MS: Record<string, number> = {

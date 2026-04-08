@@ -1,5 +1,5 @@
-import { Env } from "..";
-import { Embeddings } from "../lib/embeddings";
+import { Env } from "../..";
+import { Embeddings } from "../../llm/embeddings";
 import { MemoryDocument, MemoryDTO, MemoryMetadata, MemoryType } from "./type";
 
 /**

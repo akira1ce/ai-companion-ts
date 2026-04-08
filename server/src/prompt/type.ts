@@ -1,6 +1,6 @@
-import { EmotionContext } from "@/emotion/type";
-import { MemoryDocument } from "@/memory/type";
-import { UserProfile } from "@/user/type";
+import { EmotionContext } from "@/domain/emotion/type";
+import { MemoryDocument } from "@/domain/memory/type";
+import { UserProfile } from "@/domain/user/type";
 
 export interface CompanionProfile {
   /** 伴侣ID */

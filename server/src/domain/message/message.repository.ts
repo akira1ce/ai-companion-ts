@@ -1,4 +1,4 @@
-import { Env } from "..";
+import { Env } from "@/index";
 import { MessageDto } from "./type";
 
 export class MessageRepository {

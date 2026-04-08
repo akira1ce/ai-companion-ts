@@ -1,4 +1,4 @@
-import { UserProfile } from "@/user/type";
+import { UserProfile } from "@/domain/user/type";
 
 export function personaLayer(profile: UserProfile): string {
   const interests = profile.interests?.join("、") ?? "未知";

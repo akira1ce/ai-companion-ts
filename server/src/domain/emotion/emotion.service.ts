@@ -1,6 +1,6 @@
-import { EmotionFSM } from "./fsm";
-import { IntimacySystem } from "./intimacy";
-import { applyDecay } from "./decay";
+import { EmotionFSM } from "./utils/fsm";
+import { IntimacySystem } from "./utils/intimacy";
+import { applyDecay } from "./utils/decay";
 import type { EmotionContext, EmotionEvent } from "./type";
 
 export class EmotionService {

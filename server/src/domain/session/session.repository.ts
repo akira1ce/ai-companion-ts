@@ -1,4 +1,4 @@
-import { Env } from "..";
+import { Env } from "../..";
 import { SessionDto } from "./type";
 
 /**

@@ -1,5 +1,5 @@
 import { CompanionProfile } from "../type";
-import { UserProfile } from "@/user/type";
+import { UserProfile } from "@/domain/user/type";
 
 /** 预设伴侣列表 */
 const COMPANION_PROFILES: CompanionProfile[] = [

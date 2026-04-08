@@ -1,4 +1,4 @@
-import type { Env } from "../index.js";
+import type { Env } from "@/index";
 
 /** 创建 embeddings */
 export function createEmbeddings(env: Env) {
