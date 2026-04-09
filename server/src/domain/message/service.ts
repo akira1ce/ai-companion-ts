@@ -1,4 +1,4 @@
-import { MessageRepository } from "./message.repository";
+import { MessageRepository } from "./repository";
 import { MessageDto } from "./type";
 
 export class MessageService {

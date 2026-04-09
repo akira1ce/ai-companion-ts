@@ -1,4 +1,4 @@
-import { SessionRepository } from "./session.repository";
+import { SessionRepository } from "./repository";
 
 /**
  * 会话服务

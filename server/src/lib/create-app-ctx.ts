@@ -1,16 +1,16 @@
-import { EmotionService } from "@/domain/emotion/emotion.service";
-import { MemoryRepository } from "@/domain/memory/memory.repository";
-import { MemoryService } from "@/domain/memory/memory.service";
+import { EmotionService } from "@/domain/emotion/service";
+import { MemoryRepository } from "@/domain/memory/repository";
+import { MemoryService } from "@/domain/memory/service";
 import { Env } from "..";
 import { createEmbeddings, Embeddings } from "@/llm/embeddings";
 import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
 import { createChatModel } from "@/llm/model";
 import { createTracer } from "@/lib/tracing";
 import { BaseChatModel } from "@langchain/core/language_models/chat_models";
-import { MessageService } from "@/domain/message/message.service";
-import { SessionService } from "@/domain/session/session.service";
-import { SessionRepository } from "@/domain/session/session.repository";
-import { MessageRepository } from "@/domain/message/message.repository";
+import { MessageService } from "@/domain/message/service";
+import { SessionService } from "@/domain/session/service";
+import { SessionRepository } from "@/domain/session/repository";
+import { MessageRepository } from "@/domain/message/repository";
 
 export interface AppCtx {
   /** 模型 */

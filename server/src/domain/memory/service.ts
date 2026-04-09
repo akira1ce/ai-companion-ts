@@ -1,4 +1,4 @@
-import { MemoryRepository } from "./memory.repository";
+import { MemoryRepository } from "./repository";
 import { MemoryDocument, MemoryMetadata, MemoryType, RetrieveQuery } from "./type";
 
 /** 融合权重接口 */
