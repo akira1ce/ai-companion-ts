@@ -9,3 +9,6 @@ dist
 *.tsbuildinfo
 .dev.vars
 wrangler.toml
+
+# Localflare generated files
+.localflare/

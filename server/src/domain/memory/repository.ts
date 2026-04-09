@@ -1,6 +1,6 @@
 import { Env } from "../..";
 import { Embeddings } from "../../llm/embeddings";
-import { MemoryDocument, MemoryDTO, MemoryMetadata, MemoryType } from "./type";
+import { MemoryDocument, MemoryDTO, MemoryType } from "./type";
 
 /**
  * 记忆仓库
@@ -54,39 +54,34 @@ export class MemoryRepository {
   }
 
   /** 单条写入向量 */
-  async insertVectorize(id: string, vector: VectorFloatArray, metadata: MemoryMetadata) {
-    return this.vectorize.upsert([{ id, values: vector, metadata: { ...metadata } }]);
-  }
-
-  /** 插入记忆 */
-  async insertMemory(sessionId: string, doc: MemoryDocument) {
-    return this.db
-      .prepare(
-        `INSERT OR REPLACE INTO memories (id, session_id, type, content, metadata, created_at)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      )
-      .bind(doc.id, sessionId, doc.type, doc.content, JSON.stringify(doc.metadata), doc.created_at)
-      .all();
+  async insertVectorize(id: string, doc: MemoryDocument) {
+    const vector = await this.embeddings.embedQuery(doc.content);
+    return this.vectorize.upsert([{ id, values: vector, metadata: { ...doc.metadata } }]);
   }
 
   /** 批量插入记忆 */
   async insertMemoryBatch(sessionId: string, docs: MemoryDocument[]) {
-    const segments = docs.map((doc) => {
-      return this.db
-        .prepare(
-          "INSERT OR REPLACE INTO memories (id, session_id, type, content, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-        )
-        .bind(
-          doc.id,
-          sessionId,
-          doc.type,
-          doc.content,
-          JSON.stringify(doc.metadata),
-          doc.created_at,
-        );
+    const dbSegments: D1PreparedStatement[] = [];
+    const promises: Promise<any>[] = [];
+    docs.forEach(async (doc) => {
+      promises.push(this.insertVectorize(doc.id, doc));
+      dbSegments.push(
+        this.db
+          .prepare(
+            "INSERT OR REPLACE INTO memories (id, session_id, type, content, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+          )
+          .bind(
+            doc.id,
+            sessionId,
+            doc.type,
+            doc.content,
+            JSON.stringify(doc.metadata),
+            doc.created_at,
+          ),
+      );
     });
 
-    return this.db.batch(segments);
+    await Promise.allSettled([this.db.batch(dbSegments), ...promises]);
   }
 
   /** 删除记忆 */

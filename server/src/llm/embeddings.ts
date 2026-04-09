@@ -7,7 +7,7 @@ export function createEmbeddings(env: Env) {
 
 export function createCloudflareEmbeddings(env: Env) {
   return {
-    async embedQuery(text: string): Promise<number[]> {
+    async embedQuery(text: string): Promise<VectorFloatArray> {
       const result = (await env.AI.run("@cf/baai/bge-m3", {
         text: text,
       })) as any;
