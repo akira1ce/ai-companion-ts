@@ -4,7 +4,7 @@ import { UserProfile } from "@/domain/user/type";
 /** 预设伴侣列表 */
 const COMPANION_PROFILES: CompanionProfile[] = [
   {
-    id: "xiaowei",
+    id: "xiaowei_001",
     name: "小薇",
     personality: ["温柔体贴", "偶尔调皮", "有自己的想法和情绪", "不会无条件顺从"],
     speakingStyle: ["自然口语", "偶尔用颜文字", "不用标题或列表", "像真人发微信一样"],

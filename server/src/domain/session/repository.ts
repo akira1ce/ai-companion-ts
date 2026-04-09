@@ -12,9 +12,16 @@ export class SessionRepository {
   async create(session: SessionDto) {
     return this.db
       .prepare(
-        "INSERT INTO sessions (id, user_id, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO sessions (id, companion_id, user_id, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
       )
-      .bind(session.id, session.user_id, session.title, session.created_at, session.updated_at)
+      .bind(
+        session.id,
+        session.companion_id,
+        session.user_id,
+        session.title,
+        session.created_at,
+        session.updated_at,
+      )
       .all();
   }
 

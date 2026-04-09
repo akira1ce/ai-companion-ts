@@ -3,12 +3,14 @@
 -- Sessions: 核心实体，所有数据挂在 session 下
 CREATE TABLE IF NOT EXISTS sessions (
   id          TEXT PRIMARY KEY,     -- session_id
+  companion_id TEXT NOT NULL,
   user_id     TEXT NOT NULL,
   title       TEXT NOT NULL DEFAULT '',
   created_at  INTEGER NOT NULL,
   updated_at  INTEGER NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS idx_sessions_companion ON sessions(companion_id, updated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id, updated_at DESC);
 
 -- Memories: 长期记忆（事实、事件、摘要等）
