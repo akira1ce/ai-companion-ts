@@ -11,11 +11,17 @@ export async function hydrateContextNode(
 ): Promise<NodeResultType> {
   const appCtx = getAppCtx(config);
 
-  const [context, user, emotion] = await Promise.all([
+  const [context, user, emotion] = await Promise.allSettled([
     appCtx.contextService.getContext(state.sessionId),
     appCtx.userService.getUserById(state.userId),
     appCtx.emotionService.getEmotion(state.sessionId),
   ]);
 
-  return { context, userProfile: user, emotion };
+  const res: NodeResultType = {};
+
+  if (context.status === "fulfilled") res.context = context.value;
+  if (user.status === "fulfilled") res.userProfile = user.value;
+  if (emotion.status === "fulfilled") res.emotion = emotion.value;
+
+  return res;
 }

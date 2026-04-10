@@ -1,5 +1,5 @@
 import { Context } from "@/domain/context/type";
-import { EmotionContext } from "@/domain/emotion/type";
+import { EmotionContext, EmotionEvent } from "@/domain/emotion/type";
 import { MemoryDocument } from "@/domain/memory/type";
 import { UserProfile } from "@/domain/user/type";
 import { Annotation } from "@langchain/langgraph";
@@ -8,51 +8,30 @@ import { Annotation } from "@langchain/langgraph";
 export const ChatState = Annotation.Root({
   userId: Annotation<string>,
   sessionId: Annotation<string>,
-  companionId: Annotation<number>,
+  companionId: Annotation<string>,
   /** 消息 */
   message: Annotation<string>,
+  /** 回复 */
+  reply: Annotation<string>,
+  /** 情绪事件 */
+  emotionEvent: Annotation<EmotionEvent | null>,
 
   /** 情绪 */
-  emotion: Annotation<EmotionContext | undefined>({
-    value: (_current, update) => update,
-    default: () => undefined,
-  }),
-
+  emotion: Annotation<EmotionContext>,
   /** 用户配置 */
-  userProfile: Annotation<UserProfile | undefined>({
-    value: (_current, update) => update,
-    default: () => undefined,
-  }),
-
+  userProfile: Annotation<UserProfile>,
   /** 上下文 */
-  context: Annotation<Context | undefined>({
-    value: (_current, update) => update,
-    default: () => undefined,
-  }),
+  context: Annotation<Context>,
 
   /** 记忆 */
-  memories: Annotation<MemoryDocument[]>({
-    value: (_current, update) => update,
-    default: () => [],
-  }),
-
+  memories: Annotation<MemoryDocument[]>,
   /** 系统提示词 */
-  systemPrompt: Annotation<string | undefined>({
-    value: (_current, update) => update,
-    default: () => undefined,
-  }),
+  systemPrompt: Annotation<string>,
 
   /** 是否检索记忆 */
-  shouldRetrieveMemory: Annotation<boolean>({
-    value: (_current, update) => update,
-    default: () => true,
-  }),
-
+  shouldRetrieveMemory: Annotation<boolean>,
   /** 是否提取记忆 */
-  shouldExtractMemory: Annotation<boolean>({
-    value: (_current, update) => update,
-    default: () => true,
-  }),
+  shouldExtractMemory: Annotation<boolean>,
 });
 
 export type ChatStateType = typeof ChatState.State;

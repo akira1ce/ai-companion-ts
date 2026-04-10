@@ -11,6 +11,7 @@ export interface MemoryMetadata {
   type: MemoryType;
   content: string;
   created_at: number;
+  [key: string]: any;
 }
 
 /** 记忆文档 */
