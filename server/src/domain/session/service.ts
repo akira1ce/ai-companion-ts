@@ -17,21 +17,23 @@ export class SessionService {
       created_at: Date.now(),
       updated_at: Date.now(),
     };
-    return this.repo.create(session);
+    await this.repo.insert(session);
   }
 
   /** 获取用户会话 */
   async getSessionsByUserId(userId: string) {
-    return this.repo.getByUserId(userId);
+    const { results } = await this.repo.findByUserId(userId);
+    return results;
   }
 
   /** 获取用户会话分页 */
   async getSessionsByUserIdPage(userId: string, page: number, pageSize: number) {
-    return this.repo.getByUserIdPage(userId, page, pageSize);
+    const { results } = await this.repo.findByUserIdPage(userId, page, pageSize);
+    return results;
   }
 
   /** 删除会话 */
   async deleteSession(sessionId: string) {
-    return this.repo.delete(sessionId);
+    await this.repo.deleteById(sessionId);
   }
 }

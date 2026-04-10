@@ -9,12 +9,12 @@ export class UserRepository {
   constructor(private readonly db: Env["DB"]) {}
 
   /** 获取用户信息 */
-  async get(userId: string) {
-    return this.db.prepare(`SELECT * FROM users WHERE id = ?`).bind(userId).all<UserProfile>();
+  async findById(userId: string) {
+    return this.db.prepare(`SELECT * FROM users WHERE id = ?`).bind(userId).first<UserProfile>();
   }
 
   /** 创建用户 */
-  async create(user: UserProfile) {
+  async insert(user: UserProfile) {
     return this.db
       .prepare(
         `INSERT INTO users (id, name, username, password, occupation, interests, recent_events, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -27,10 +27,10 @@ export class UserRepository {
         user.occupation,
         user.interests,
         user.recent_events,
-        user.created_at,
-        user.updated_at,
+        Date.now(),
+        Date.now(),
       )
-      .all();
+      .run();
   }
 
   /** 更新用户信息 */
@@ -46,14 +46,14 @@ export class UserRepository {
         user.occupation,
         user.interests,
         user.recent_events,
-        user.updated_at,
+        Date.now(),
         user.id,
       )
-      .all();
+      .run();
   }
 
   /** 删除用户 */
-  async delete(userId: string) {
-    return this.db.prepare(`DELETE FROM users WHERE id = ?`).bind(userId).all();
+  async deleteById(userId: string) {
+    return this.db.prepare(`DELETE FROM users WHERE id = ?`).bind(userId).run();
   }
 }

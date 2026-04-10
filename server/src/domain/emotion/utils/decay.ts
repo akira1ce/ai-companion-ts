@@ -17,7 +17,7 @@ const CALM_THRESHOLD = 10;
  * 对情绪上下文应用时间衰减（半衰期模型）
  * 通常在每次会话开始时调用，将离线时间折算进来
  */
-export function applyDecay(ctx: EmotionContext): EmotionContext {
+export function calculateDecay(ctx: EmotionContext): EmotionContext {
   if (ctx.state === "calm") return ctx;
 
   const now = Date.now();

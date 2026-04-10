@@ -1,6 +1,7 @@
 import { Env } from "@/index";
 import { MessageDto } from "./type";
 
+/** 消息仓库 */
 export class MessageRepository {
   constructor(private readonly db: Env["DB"]) {}
 
@@ -11,7 +12,7 @@ export class MessageRepository {
         "INSERT INTO messages (id, session_id, role, content, created_at) VALUES (?, ?, ?, ?, ?)",
       )
       .bind(message.id, message.session_id, message.role, message.content, message.created_at)
-      .all();
+      .run();
   }
 
   /** 批量创建消息 */
@@ -24,23 +25,23 @@ export class MessageRepository {
         .bind(message.id, message.session_id, message.role, message.content, message.created_at);
     });
 
-    return this.db.batch(segments);
+    return this.db.batch<MessageDto>(segments);
   }
 
   /** 删除消息 */
-  async delete(sessionId: string) {
-    return this.db.prepare("DELETE FROM messages WHERE session_id = ?").bind(sessionId).all();
+  async deleteById(sessionId: string) {
+    return this.db.prepare("DELETE FROM messages WHERE session_id = ?").bind(sessionId).run();
   }
 
   /** 获取会话消息 */
-  async getBySession(sessionId: string) {
+  async findBySessionId(sessionId: string) {
     return this.db
       .prepare("SELECT * FROM messages WHERE session_id = ?")
       .bind(sessionId)
       .all<MessageDto>();
   }
 
-  async getBySessionPage(sessionId: string, page: number, pageSize: number) {
+  async findBySessionIdPage(sessionId: string, page: number, pageSize: number) {
     return this.db
       .prepare(
         "SELECT * FROM messages WHERE session_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",

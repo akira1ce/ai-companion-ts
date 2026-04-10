@@ -1,18 +1,24 @@
 import { MessageRepository } from "./repository";
 import { MessageDto } from "./type";
 
+/** 消息服务 */
 export class MessageService {
   constructor(private readonly repo: MessageRepository) {}
 
-  appendMessages(messages: MessageDto[]) {
-    return this.repo.insertBatch(messages);
+  /** 批量插入消息 */
+  async appendMessages(messages: MessageDto[]) {
+    await this.repo.insertBatch(messages);
   }
 
-  getMessagesBySession(sessionId: string) {
-    return this.repo.getBySession(sessionId);
+  /** 获取会话消息 */
+  async getMessagesBySession(sessionId: string) {
+    const { results } = await this.repo.findBySessionId(sessionId);
+    return results;
   }
 
-  getMessagesBySessionPage(sessionId: string, page: number, pageSize: number) {
-    return this.repo.getBySessionPage(sessionId, page, pageSize);
+  /** 获取会话消息分页 */
+  async getMessagesBySessionPage(sessionId: string, page: number, pageSize: number) {
+    const { results } = await this.repo.findBySessionIdPage(sessionId, page, pageSize);
+    return results;
   }
 }

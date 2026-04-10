@@ -24,8 +24,8 @@ export class MemoryService {
   ) {}
 
   /** 写入记忆 */
-  write(sessionId: string, docs: MemoryDocument[]) {
-    return this.repo.insertMemoryBatch(sessionId, docs);
+  async write(sessionId: string, docs: MemoryDocument[]) {
+    await this.repo.insertMemoryBatch(sessionId, docs);
   }
 
   /**
@@ -69,7 +69,7 @@ export class MemoryService {
 
   /** 语义检索 */
   async semanticChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
-    const res = await this.repo.getByVectorize(query.query, query.limit * 2);
+    const res = await this.repo.findByVectorize(query.query, query.limit * 2);
 
     return res.matches.map((item) => ({
       id: item.id,
@@ -83,8 +83,13 @@ export class MemoryService {
 
   /** 结构化检索 */
   async structuredChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
-    const res = await this.repo.getByTypes(query.sessionId, ["event", "keyword"], query.limit * 2);
-    return res.results.map((item) => ({
+    const { results } = await this.repo.findByTypes(
+      query.sessionId,
+      ["event", "keyword"],
+      query.limit * 2,
+    );
+
+    return results.map((item) => ({
       id: item.id,
       type: item.type,
       content: item.content,
@@ -95,8 +100,9 @@ export class MemoryService {
 
   /** 摘要检索 */
   async summaryChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
-    const res = await this.repo.getByTypes(query.sessionId, ["summary"], query.limit * 2);
-    return res.results.map((item) => ({
+    const { results } = await this.repo.findByTypes(query.sessionId, ["summary"], query.limit * 2);
+
+    return results.map((item) => ({
       id: item.id,
       type: item.type,
       content: item.content,
@@ -106,8 +112,9 @@ export class MemoryService {
   }
   /** 关键词检索 */
   async keywordChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
-    const res = await this.repo.getByTypes(query.sessionId, ["keyword"], query.limit * 2);
-    return res.results.map((item) => ({
+    const { results } = await this.repo.findByTypes(query.sessionId, ["keyword"], query.limit * 2);
+
+    return results.map((item) => ({
       id: item.id,
       type: item.type,
       content: item.content,

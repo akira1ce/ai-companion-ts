@@ -14,13 +14,13 @@ export class MemoryRepository {
   ) {}
 
   /** 向量检索 */
-  async getByVectorize(query: string, limit: number) {
+  async findByVectorize(query: string, limit: number) {
     const vector = await this.embeddings.embedQuery(query);
     return this.vectorize.query(vector, { topK: limit, returnMetadata: "all" });
   }
 
   /** 类型检索 */
-  async getByTypes(sessionId: string, types: MemoryType[], limit: number) {
+  async findByTypes(sessionId: string, types: MemoryType[], limit: number) {
     return this.db
       .prepare(
         `SELECT id, type, content, metadata, created_at
@@ -34,7 +34,7 @@ export class MemoryRepository {
   }
 
   /** 关键词全文检索 */
-  async getByKeyword(sessionId: string, query: string, limit: number) {
+  async findByKeyword(sessionId: string, query: string, limit: number) {
     const terms = query.split(/\s+/).filter(Boolean).slice(0, 5);
     if (terms.length === 0) return [];
 
@@ -85,7 +85,7 @@ export class MemoryRepository {
   }
 
   /** 删除记忆 */
-  async deleteMemoryBySession(sessionId: string) {
+  async deleteBySessionId(sessionId: string) {
     return this.db.prepare(`DELETE FROM memories WHERE session_id = ?`).bind(sessionId).all();
   }
 }
