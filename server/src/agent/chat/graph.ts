@@ -26,7 +26,7 @@ export const ChatGraph = new StateGraph(ChatState, ChatConfig)
   .addEdge(START, "loadContext")
   .addEdge("loadContext", "classifyEmotion")
   .addEdge("classifyEmotion", "updateEmotion")
-  .addConditionalEdges("retrieveMemory", shouldRetrieveMemory, {
+  .addConditionalEdges("updateEmotion", shouldRetrieveMemory, {
     retrieve: "retrieveMemory",
     skip: "skipRetrieveMemory",
   })
