@@ -1,7 +1,7 @@
 import { Context } from "@/domain/context/type";
 import { EmotionContext, EmotionEvent } from "@/domain/emotion/type";
 import { MemoryDocument } from "@/domain/memory/type";
-import { UserProfile } from "@/domain/user/type";
+import { UserSchema } from "@/domain/user/type";
 import { Annotation } from "@langchain/langgraph";
 
 /** 聊天图状态 */
@@ -19,7 +19,7 @@ export const ChatState = Annotation.Root({
   /** 情绪 */
   emotion: Annotation<EmotionContext>,
   /** 用户配置 */
-  userProfile: Annotation<UserProfile>,
+  userProfile: Annotation<UserSchema>,
   /** 上下文 */
   context: Annotation<Context>,
 

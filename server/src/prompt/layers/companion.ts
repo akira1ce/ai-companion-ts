@@ -1,5 +1,5 @@
 import { CompanionProfile } from "../type";
-import { UserProfile } from "@/domain/user/type";
+import { UserSchema } from "@/domain/user/type";
 
 /** 预设伴侣列表 */
 const COMPANION_PROFILES: CompanionProfile[] = [
@@ -28,7 +28,7 @@ function formatList(list: string[]): string {
   return list.map((item) => `- ${item}`).join("\n");
 }
 
-export function companionLayer(companionId: string, userProfile: UserProfile): string {
+export function companionLayer(companionId: string, userProfile: UserSchema): string {
   const companion = COMPANION_PROFILES.find((companion) => companion.id === companionId);
   if (!companion) {
     return "";
