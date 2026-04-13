@@ -45,8 +45,8 @@ CREATE TABLE IF NOT EXISTS users (
   username    TEXT NOT NULL,
   password    TEXT NOT NULL,
   occupation  TEXT NOT NULL DEFAULT '',
-  interests   TEXT NOT NULL DEFAULT '[]' -- json array, string
-  recent_events TEXT NOT NULL DEFAULT '[]' -- json array, string
+  interests   TEXT NOT NULL DEFAULT '[]', -- json array, string
+  recent_events TEXT NOT NULL DEFAULT '[]', -- json array, string
   created_at  INTEGER NOT NULL,
   updated_at  INTEGER NOT NULL
 );

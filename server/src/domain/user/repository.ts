@@ -25,8 +25,8 @@ export class UserRepository {
         user.username,
         user.password,
         user.occupation,
-        JSON.stringify(user.interests),
-        JSON.stringify(user.recent_events),
+        user.interests,
+        user.recent_events,
         Date.now(),
         Date.now(),
       )
@@ -44,8 +44,8 @@ export class UserRepository {
         user.username,
         user.password,
         user.occupation,
-        JSON.stringify(user.interests),
-        JSON.stringify(user.recent_events),
+        user.interests,
+        user.recent_events,
         Date.now(),
         user.id,
       )
