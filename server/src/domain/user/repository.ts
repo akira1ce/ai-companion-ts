@@ -1,5 +1,5 @@
 import { Env } from "@/index";
-import { UserProfile } from "./type";
+import { UserDto } from "./type";
 
 /**
  * 用户仓库
@@ -10,11 +10,11 @@ export class UserRepository {
 
   /** 获取用户信息 */
   async findById(userId: string) {
-    return this.db.prepare(`SELECT * FROM users WHERE id = ?`).bind(userId).first<UserProfile>();
+    return this.db.prepare(`SELECT * FROM users WHERE id = ?`).bind(userId).first<UserDto>();
   }
 
   /** 创建用户 */
-  async insert(user: UserProfile) {
+  async insert(user: UserDto) {
     return this.db
       .prepare(
         `INSERT INTO users (id, name, username, password, occupation, interests, recent_events, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -25,8 +25,8 @@ export class UserRepository {
         user.username,
         user.password,
         user.occupation,
-        user.interests,
-        user.recent_events,
+        JSON.stringify(user.interests),
+        JSON.stringify(user.recent_events),
         Date.now(),
         Date.now(),
       )
@@ -34,7 +34,7 @@ export class UserRepository {
   }
 
   /** 更新用户信息 */
-  async update(user: UserProfile) {
+  async update(user: UserDto) {
     return this.db
       .prepare(
         `UPDATE users SET name = ?, username = ?, password = ?, occupation = ?, interests = ?, recent_events = ?, updated_at = ? WHERE id = ?`,
@@ -44,8 +44,8 @@ export class UserRepository {
         user.username,
         user.password,
         user.occupation,
-        user.interests,
-        user.recent_events,
+        JSON.stringify(user.interests),
+        JSON.stringify(user.recent_events),
         Date.now(),
         user.id,
       )

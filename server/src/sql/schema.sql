@@ -28,7 +28,7 @@ CREATE INDEX IF NOT EXISTS idx_memories_session_created ON memories(session_id, 
 
 -- Messages: 聊天消息
 CREATE TABLE IF NOT EXISTS messages (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  id          TEXT PRIMARY KEY,
   session_id  TEXT NOT NULL,
   role        TEXT NOT NULL, -- 'user' | 'assistant'
   content     TEXT NOT NULL,
