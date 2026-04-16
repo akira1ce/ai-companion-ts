@@ -7,7 +7,6 @@ import { UserNav } from "./user-nav";
 
 const NAV_ITEMS = [
   { href: "/companions", label: "伴侣" },
-  { href: "/settings", label: "设置" },
 ] as const;
 
 export function Sidebar() {

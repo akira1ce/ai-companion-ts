@@ -23,8 +23,8 @@ export function ProfileForm({ profile, saving, onSave }: ProfileFormProps) {
     onSave({
       name: values.name,
       occupation: values.occupation,
-      interests: JSON.stringify(values.interests.split("、").filter(Boolean)),
-      recent_events: JSON.stringify(values.recentEvents.split("、").filter(Boolean)),
+      interests: values.interests,
+      recent_events: values.recentEvents,
     });
   };
 
@@ -36,11 +36,10 @@ export function ProfileForm({ profile, saving, onSave }: ProfileFormProps) {
         username: profile.username,
         name: profile.name,
         occupation: profile.occupation,
-        interests: profile.interests.join("、"),
-        recentEvents: profile.recentEvents.join("、"),
+        interests: profile.interests,
+        recentEvents: profile.recentEvents,
       }}
-      className="max-w-md"
-    >
+      className="max-w-md">
       <Form.Item label="账号" name="username">
         <Input disabled />
       </Form.Item>

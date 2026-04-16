@@ -39,6 +39,6 @@ export interface UserProfile {
   name: string;
   username: string;
   occupation: string;
-  interests: string[];
-  recentEvents: string[];
+  interests: string;
+  recentEvents: string;
 }

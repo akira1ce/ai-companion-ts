@@ -16,8 +16,8 @@ export class UserService {
       username: userProfile.username,
       password: userProfile.password,
       occupation: userProfile.occupation ?? "",
-      interests: userProfile.interests ?? "[]",
-      recent_events: userProfile.recent_events ?? "[]",
+      interests: userProfile.interests ?? "",
+      recent_events: userProfile.recent_events ?? "",
       created_at: now,
       updated_at: now,
     };

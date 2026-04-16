@@ -32,8 +32,8 @@ export default function LoginPage() {
         name: data.name ?? "",
         username: data.username,
         occupation: data.occupation ?? "",
-        interests: data.interests ? JSON.parse(data.interests) : [],
-        recentEvents: data.recent_events ? JSON.parse(data.recent_events) : [],
+        interests: data.interests ?? "",
+        recentEvents: data.recent_events ?? "",
       };
       appActions.setUser(profile);
       router.replace("/companions");
