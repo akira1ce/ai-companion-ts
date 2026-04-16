@@ -4,26 +4,28 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button, Input, Form, Typography, Alert } from "antd";
 import { apiRegister } from "@/services";
+
+const { Title } = Typography;
+
+interface RegisterFormValues {
+  name: string;
+  username: string;
+  password: string;
+}
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleFinish = async (values: RegisterFormValues) => {
     setError("");
     setLoading(true);
 
     try {
-      await apiRegister({ name, username, password });
+      await apiRegister(values);
       router.replace("/login");
     } catch {
       setError("注册失败，账号可能已存在");
@@ -34,53 +36,46 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6 rounded-lg border p-6">
-        <h1 className="text-center text-lg font-semibold">注册</h1>
+      <div className="w-full max-w-sm rounded-lg border border-gray-200 p-10">
+        <Title level={4} className="mb-6! text-center">
+          注册
+        </Title>
 
-        {error && <p className="text-center text-sm text-destructive">{error}</p>}
+        {error && <Alert type="error" message={error} showIcon className="mb-4" />}
 
-        <div className="space-y-2">
-          <Label htmlFor="name">昵称</Label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            autoFocus
-          />
-        </div>
+        <Form layout="vertical" onFinish={handleFinish} autoComplete="off">
+          <Form.Item label="昵称" name="name">
+            <Input autoFocus />
+          </Form.Item>
 
-        <div className="space-y-2">
-          <Label htmlFor="username">账号</Label>
-          <Input
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
+          <Form.Item
+            label="账号"
+            name="username"
+            rules={[{ required: true, message: "请输入账号" }]}>
+            <Input />
+          </Form.Item>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">密码</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+          <Form.Item
+            label="密码"
+            name="password"
+            rules={[{ required: true, message: "请输入密码" }]}>
+            <Input.Password />
+          </Form.Item>
 
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "注册中..." : "注册"}
-        </Button>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block loading={loading}>
+              注册
+            </Button>
+          </Form.Item>
+        </Form>
 
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-sm text-gray-500">
           已有账号？{" "}
-          <Link href="/login" className="text-primary underline-offset-4 hover:underline">
+          <Link href="/login" className="text-blue-600 hover:underline">
             去登录
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }

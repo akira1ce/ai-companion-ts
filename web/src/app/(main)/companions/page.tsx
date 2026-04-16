@@ -1,20 +1,45 @@
 /* 「view」 */
 "use client";
 
-import { useCompanionsController } from "./controller";
+import { useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useQuery } from "@akira1ce/r-hooks";
+import { apiCreateSession } from "@/services";
+import { useUserStore } from "@/stores";
+import { getCompanions } from "./controller";
 import { CompanionCard } from "./components/companion-card";
 
 export default function CompanionsPage() {
-  const { companions, loading, handleSelect } = useCompanionsController();
+  const router = useRouter();
+  const user = useUserStore((s) => s.user);
+  const { data: companions, loading } = useQuery(getCompanions, {
+    defaultData: [],
+  });
+
+  useEffect(() => {
+    console.log("akira.122131", 122131);
+  }, []);
+
+  const handleSelect = useCallback(
+    async (companionId: string) => {
+      if (!user) return;
+      const { data: session } = await apiCreateSession({
+        userId: user.id,
+        companionId,
+      });
+      router.push(`/chat/${session.id}`);
+    },
+    [user],
+  );
 
   return (
     <div className="flex flex-1 flex-col p-6">
       <h1 className="text-lg font-semibold">选择你的伴侣</h1>
 
       {loading ? (
-        <p className="mt-4 text-sm text-muted-foreground">加载中...</p>
+        <p className="mt-4 text-sm text-gray-500">加载中...</p>
       ) : companions.length === 0 ? (
-        <p className="mt-4 text-sm text-muted-foreground">暂无可用伴侣</p>
+        <p className="mt-4 text-sm text-gray-500">暂无可用伴侣</p>
       ) : (
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {companions.map((c) => (

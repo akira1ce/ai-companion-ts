@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, type KeyboardEvent } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Button, Input } from "antd";
+
+const { TextArea } = Input;
 
 interface ChatInputProps {
   onSend: (text: string) => void;
@@ -27,20 +28,18 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <div className="border-t p-4">
+    <div className="border-t border-gray-200 p-4">
       <div className="mx-auto flex max-w-2xl items-end gap-2">
-        <Textarea
+        <TextArea
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="输入消息..."
           disabled={disabled}
           rows={1}
-          className="min-h-10 max-h-32 resize-none"
+          autoSize={{ minRows: 1, maxRows: 4 }}
+          className="flex-1"
         />
-        <Button onClick={handleSubmit} disabled={disabled || !value.trim()} size="sm">
-          发送
-        </Button>
       </div>
     </div>
   );

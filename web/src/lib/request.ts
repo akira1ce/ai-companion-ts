@@ -1,5 +1,7 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8787";
 
+console.log("akira.BASE_URL", BASE_URL);
+
 interface RequestOptions extends Omit<RequestInit, "body"> {
   params?: Record<string, string>;
   body?: unknown;
@@ -23,7 +25,7 @@ export class RequestError extends Error {
 }
 
 function buildUrl(path: string, params?: Record<string, string>): string {
-  const url = new URL(path, BASE_URL);
+  const url = new URL(`/a-api${path}`, BASE_URL);
   if (params) {
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   }

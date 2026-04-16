@@ -42,7 +42,7 @@ CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, created_
 CREATE TABLE IF NOT EXISTS users (
   id          TEXT PRIMARY KEY,
   name        TEXT NOT NULL,
-  username    TEXT NOT NULL,
+  username    TEXT NOT NULL UNIQUE,
   password    TEXT NOT NULL,
   occupation  TEXT NOT NULL DEFAULT '',
   interests   TEXT NOT NULL DEFAULT '[]', -- json array, string

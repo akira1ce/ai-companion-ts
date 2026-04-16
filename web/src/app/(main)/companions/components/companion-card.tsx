@@ -1,8 +1,9 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Card, Avatar, Typography } from "antd";
 import type { CompanionItem } from "@/types";
+
+const { Text, Paragraph } = Typography;
 
 interface CompanionCardProps {
   companion: CompanionItem;
@@ -12,20 +13,19 @@ interface CompanionCardProps {
 export function CompanionCard({ companion, onSelect }: CompanionCardProps) {
   return (
     <Card
-      className="cursor-pointer transition-shadow hover:shadow-md"
+      hoverable
       onClick={() => onSelect(companion.id)}
+      className="cursor-pointer"
     >
-      <CardHeader className="flex flex-row items-center gap-4">
-        <Avatar className="h-12 w-12">
-          <AvatarFallback className="text-lg">{companion.name[0]}</AvatarFallback>
-        </Avatar>
-        <div className="flex-1 space-y-1">
-          <CardTitle className="text-base">{companion.name}</CardTitle>
-          <CardDescription className="text-sm line-clamp-2">
+      <div className="flex items-center gap-4">
+        <Avatar size={48}>{companion.name[0]}</Avatar>
+        <div className="flex-1 min-w-0">
+          <Text strong className="block">{companion.name}</Text>
+          <Paragraph type="secondary" className="mb-0! text-sm" ellipsis={{ rows: 2 }}>
             {companion.personality}
-          </CardDescription>
+          </Paragraph>
         </div>
-      </CardHeader>
+      </div>
     </Card>
   );
 }

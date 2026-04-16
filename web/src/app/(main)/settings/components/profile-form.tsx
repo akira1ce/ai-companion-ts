@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Button, Input, Form } from "antd";
 import type { UserProfile, ApiUpdateUserReq } from "@/types";
+
+const { TextArea } = Input;
 
 interface ProfileFormProps {
   profile: UserProfile;
@@ -13,66 +11,61 @@ interface ProfileFormProps {
   onSave: (params: ApiUpdateUserReq) => void;
 }
 
-export function ProfileForm({ profile, saving, onSave }: ProfileFormProps) {
-  const [name, setName] = useState(profile.name);
-  const [occupation, setOccupation] = useState(profile.occupation);
-  const [interests, setInterests] = useState(profile.interests.join("、"));
-  const [recentEvents, setRecentEvents] = useState(profile.recentEvents.join("、"));
+interface ProfileFormValues {
+  name: string;
+  occupation: string;
+  interests: string;
+  recentEvents: string;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+export function ProfileForm({ profile, saving, onSave }: ProfileFormProps) {
+  const handleFinish = (values: ProfileFormValues) => {
     onSave({
-      name,
-      occupation,
-      interests: JSON.stringify(interests.split("、").filter(Boolean)),
-      recent_events: JSON.stringify(recentEvents.split("、").filter(Boolean)),
+      name: values.name,
+      occupation: values.occupation,
+      interests: JSON.stringify(values.interests.split("、").filter(Boolean)),
+      recent_events: JSON.stringify(values.recentEvents.split("、").filter(Boolean)),
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="username">账号</Label>
-        <Input id="username" value={profile.username} disabled />
-      </div>
+    <Form
+      layout="vertical"
+      onFinish={handleFinish}
+      initialValues={{
+        username: profile.username,
+        name: profile.name,
+        occupation: profile.occupation,
+        interests: profile.interests.join("、"),
+        recentEvents: profile.recentEvents.join("、"),
+      }}
+      className="max-w-md"
+    >
+      <Form.Item label="账号" name="username">
+        <Input disabled />
+      </Form.Item>
 
-      <div className="space-y-2">
-        <Label htmlFor="name">昵称</Label>
-        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-      </div>
+      <Form.Item label="昵称" name="name">
+        <Input />
+      </Form.Item>
 
-      <div className="space-y-2">
-        <Label htmlFor="occupation">职业</Label>
-        <Input
-          id="occupation"
-          value={occupation}
-          onChange={(e) => setOccupation(e.target.value)}
-        />
-      </div>
+      <Form.Item label="职业" name="occupation">
+        <Input />
+      </Form.Item>
 
-      <div className="space-y-2">
-        <Label htmlFor="interests">兴趣爱好（用顿号分隔）</Label>
-        <Textarea
-          id="interests"
-          value={interests}
-          onChange={(e) => setInterests(e.target.value)}
-          rows={2}
-        />
-      </div>
+      <Form.Item label="兴趣爱好（用顿号分隔）" name="interests">
+        <TextArea rows={2} />
+      </Form.Item>
 
-      <div className="space-y-2">
-        <Label htmlFor="recentEvents">近期事件（用顿号分隔）</Label>
-        <Textarea
-          id="recentEvents"
-          value={recentEvents}
-          onChange={(e) => setRecentEvents(e.target.value)}
-          rows={2}
-        />
-      </div>
+      <Form.Item label="近期事件（用顿号分隔）" name="recentEvents">
+        <TextArea rows={2} />
+      </Form.Item>
 
-      <Button type="submit" disabled={saving}>
-        {saving ? "保存中..." : "保存"}
-      </Button>
-    </form>
+      <Form.Item>
+        <Button type="primary" htmlType="submit" loading={saving}>
+          保存
+        </Button>
+      </Form.Item>
+    </Form>
   );
 }

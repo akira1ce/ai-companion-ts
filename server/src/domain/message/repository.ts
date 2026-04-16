@@ -40,7 +40,9 @@ export class MessageRepository {
   /** 查询会话下全部消息 */
   async findBySessionId(sessionId: string): Promise<Message[]> {
     const res = await this.db
-      .prepare("SELECT id, session_id, role, content, created_at FROM messages WHERE session_id = ?")
+      .prepare(
+        "SELECT id, session_id, role, content, created_at FROM messages WHERE session_id = ?",
+      )
       .bind(sessionId)
       .all<Message>();
 
@@ -51,7 +53,7 @@ export class MessageRepository {
   async findBySessionIdPage(sessionId: string, page: number, pageSize: number): Promise<Message[]> {
     const res = await this.db
       .prepare(
-        "SELECT id, session_id, role, content, created_at FROM messages WHERE session_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
+        "SELECT id, session_id, role, content, created_at FROM messages WHERE session_id = ? ORDER BY created_at ASC LIMIT ? OFFSET ?",
       )
       .bind(sessionId, pageSize, (page - 1) * pageSize)
       .all<Message>();

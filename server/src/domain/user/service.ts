@@ -9,11 +9,17 @@ export class UserService {
 
   /** 创建用户 */
   async createUser(userProfile: CreateUserInput): Promise<void> {
+    const now = Date.now();
     const user: User = {
-      ...userProfile,
       id: crypto.randomUUID(),
-      created_at: Date.now(),
-      updated_at: Date.now(),
+      name: userProfile.name ?? "",
+      username: userProfile.username,
+      password: userProfile.password,
+      occupation: userProfile.occupation ?? "",
+      interests: userProfile.interests ?? "[]",
+      recent_events: userProfile.recent_events ?? "[]",
+      created_at: now,
+      updated_at: now,
     };
     await this.repo.insert(user);
   }

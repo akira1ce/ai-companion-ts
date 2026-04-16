@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, Button } from "antd";
 import { useUserStore } from "@/stores";
 
 export function UserNav() {
@@ -19,18 +18,11 @@ export function UserNav() {
 
   return (
     <div className="flex items-center gap-2">
-      <Avatar className="h-7 w-7">
-        <AvatarFallback className="text-xs">
-          {(user.name || user.username)[0]}
-        </AvatarFallback>
+      <Avatar size={28}>
+        {(user.name || user.username)[0]}
       </Avatar>
       <span className="flex-1 truncate text-sm">{user.name || user.username}</span>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-6 px-2 text-xs text-muted-foreground"
-        onClick={handleLogout}
-      >
+      <Button type="text" size="small" onClick={handleLogout} className="text-gray-400">
         退出
       </Button>
     </div>

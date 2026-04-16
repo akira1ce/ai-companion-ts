@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import { apiGetSessions, apiDeleteSession } from "@/services";
 import { useSessionStore, useUserStore } from "@/stores";
 
@@ -36,7 +36,7 @@ export function SessionList() {
 
   if (sessions.length === 0) {
     return (
-      <p className="px-3 py-2 text-xs text-muted-foreground">暂无会话</p>
+      <p className="px-3 py-2 text-xs text-gray-400">暂无会话</p>
     );
   }
 
@@ -49,21 +49,18 @@ export function SessionList() {
           <Link
             key={session.id}
             href={href}
-            className={cn(
-              "group flex items-center justify-between rounded-md px-3 py-1.5 text-sm transition-colors",
-              "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-              active && "bg-sidebar-accent text-sidebar-accent-foreground font-medium",
-            )}
+            className={`group flex items-center justify-between rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-gray-200 ${
+              active ? "bg-gray-200 font-medium" : ""
+            }`}
           >
             <span className="truncate">{session.title}</span>
             <Button
-              variant="ghost"
-              size="sm"
-              className="invisible h-5 w-5 p-0 text-muted-foreground hover:text-destructive group-hover:visible"
+              type="text"
+              size="small"
+              icon={<CloseOutlined />}
+              className="invisible h-5! w-5! min-w-0! text-gray-400 hover:text-red-500! group-hover:visible"
               onClick={(e) => handleDelete(e, session.id)}
-            >
-              &times;
-            </Button>
+            />
           </Link>
         );
       })}

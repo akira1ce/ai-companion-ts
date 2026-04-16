@@ -31,7 +31,6 @@ src/pages/<page-name>/
 - 从 controller 获取处理好的数据
 - 管理 UI 状态（loading、表单输入等）
 - 组合子组件完成页面布局
-- 通过 hooks 或 controller 函数触发业务动作
 
 ```typescript
 /* 「view」 */
@@ -54,7 +53,7 @@ export default function Page() {
 1. **数据校验** - 验证参数合法性
 2. **数据二次处理** - 将 service 返回的原始数据转换为 View 层所需格式
 3. **多接口编排** - 组合多个 service 调用
-4. **组件级 hooks** - 提供页面级别的自定义 hooks
+4. **数据处理** - 仅做数据处理，涉及交互逻辑还是在 view 层做（命名 handleXxx）。
 
 ```typescript
 /**
@@ -113,14 +112,14 @@ export const apiLogin = async (params: ApiLoginReq) => {
  */
 
 /* 「controller-type」 */
-export interface OverUserInfo {
+export interface UserInfoSchema {
   id: string;
   name: string;
   thumbnail: string;
 }
 
 /* 「service-type」 */
-export interface UserInfo {
+export interface UserInfoDto {
   name: { first: string; last: string };
   picture: { thumbnail: string };
 }
@@ -128,50 +127,38 @@ export interface UserInfo {
 
 ### Components (`components/`)
 
-页面私有子组件，仅在当前页面内复用。
+模块内的子组件
 
-- 通过 props 接收 controller 层处理好的数据
-- 不直接调用 service 或 controller
 - 文件名使用 kebab-case
+- 不要过度分装、严格职责划分
 
 ## Naming Conventions
 
 ### Directory & Files
 
-| 对象 | 风格 | 示例 |
-|------|------|------|
-| 页面目录 | kebab-case | `user-profile/`, `order-detail/` |
-| 入口文件 | 固定 | `index.tsx` |
-| 控制器 | 固定 | `controller.ts` |
-| 服务层 | 固定 | `service.ts` |
-| 类型文件 | 固定 | `type.ts` |
-| 子组件文件 | kebab-case | `components/user-card.tsx` |
+| 对象       | 风格       | 示例                             |
+| ---------- | ---------- | -------------------------------- |
+| 页面目录   | kebab-case | `user-profile/`, `order-detail/` |
+| 入口文件   | 固定       | `index.tsx`                      |
+| 控制器     | 固定       | `controller.ts`                  |
+| 服务层     | 固定       | `service.ts`                     |
+| 类型文件   | 固定       | `type.ts`                        |
+| 子组件文件 | kebab-case | `components/user-card.tsx`       |
 
 ### Functions
 
-| 层级 | 前缀规则 | 示例 |
-|------|----------|------|
-| Service 函数 | `api` + 动词 + 名词 | `apiLogin`, `apiGetUserInfo`, `apiUpdateOrder` |
-| Controller 函数 | `get/set/handle` + 业务描述 | `getOverUsersInfo`, `handleSubmitOrder` |
-| Controller hooks | `use` + 业务描述 | `useUserForm`, `useOrderList` |
+| 层级             | 前缀规则                    | 示例                                           |
+| ---------------- | --------------------------- | ---------------------------------------------- |
+| Service 函数     | `api` + 动词 + 名词         | `apiLogin`, `apiGetUserInfo`, `apiUpdateOrder` |
+| Controller 函数  | `get/set/handle` + 业务描述 | `getOverUsersInfo`, `handleSubmitOrder`        |
+| Controller hooks | `use` + 业务描述            | `useUserForm`, `useOrderList`                  |
 
 ### Types & Interfaces
 
-| 类别 | 规则 | 示例 |
-|------|------|------|
+| 类别         | 规则                   | 示例                               |
+| ------------ | ---------------------- | ---------------------------------- |
 | API 请求类型 | `Api` + 接口名 + `Req` | `ApiLoginReq`, `ApiGetUserInfoReq` |
 | API 响应类型 | `Api` + 接口名 + `Res` | `ApiLoginRes`, `ApiGetUserInfoRes` |
-| Controller 类型 | 业务语义命名（PascalCase） | `OverUserInfo`, `OrderDetail` |
-
-### File Header Comments
-
-每个文件使用「标记注释」标明层级归属：
-
-```typescript
-/* 「view」 */        // index.tsx
-/* 「controller」 */  // controller.ts
-/* 「service」 */     // service.ts
-```
 
 ## Workflow: Creating a New Page
 
@@ -184,8 +171,7 @@ export interface UserInfo {
 
 ## Key Principles
 
-- **View 不直接调用 Service** - 始终通过 Controller 或 hooks 间接访问
 - **Service 与接口文档一致** - 不在 service 层做数据加工
 - **类型集中管理** - 所有类型放在 `type.ts`，按分区注释组织
 - **Controller 负责适配** - 将后端数据结构转换为前端 UI 友好的格式
-- **全局共享逻辑** 放 `src/hooks/` 或 `src/stores/`，页面级逻辑留在 controller
+- **全局共享逻辑** 放 `src/hooks/` 或 `src/stores/`

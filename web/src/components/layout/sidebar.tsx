@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { SessionList } from "./session-list";
 import { UserNav } from "./user-nav";
 
@@ -16,8 +14,8 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-60 flex-col border-r bg-sidebar">
-      <div className="flex h-14 shrink-0 items-center border-b px-4">
+    <aside className="flex w-60 flex-col border-r border-gray-200 bg-gray-50">
+      <div className="flex h-14 shrink-0 items-center shadow px-4">
         <Link href="/companions" className="text-sm font-semibold">
           AI Companion
         </Link>
@@ -28,27 +26,23 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
-            className={cn(
-              "flex items-center rounded-md px-3 py-2 text-sm transition-colors",
-              "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-              pathname === item.href &&
-                "bg-sidebar-accent text-sidebar-accent-foreground font-medium",
-            )}
-          >
+            className={`flex items-center rounded-md px-3 py-2 text-sm transition-colors hover:bg-gray-200 ${
+              pathname === item.href ? "bg-gray-200 font-medium" : ""
+            }`}>
             {item.label}
           </Link>
         ))}
       </nav>
 
       <div className="flex shrink-0 items-center px-4 py-2">
-        <span className="text-xs font-medium text-muted-foreground">会话</span>
+        <span className="text-xs font-medium text-gray-400">会话</span>
       </div>
 
-      <ScrollArea className="flex-1 px-2">
+      <div className="flex-1 overflow-y-auto px-2">
         <SessionList />
-      </ScrollArea>
+      </div>
 
-      <div className="shrink-0 border-t p-3">
+      <div className="shrink-0 border-t border-gray-200 p-3">
         <UserNav />
       </div>
     </aside>

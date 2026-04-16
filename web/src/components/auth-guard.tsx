@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Spin } from "antd";
 import { useUserStore } from "@/stores";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -32,7 +33,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   if (!hydrated || !user) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-sm text-muted-foreground">加载中...</p>
+        <Spin />
       </div>
     );
   }
