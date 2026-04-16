@@ -38,4 +38,12 @@ export class UserService {
     if (!user) throw new Error("[UserService.getUserById]: User not found");
     return user;
   }
+
+  /** 登录：按用户名查找并校验密码 */
+  async login(username: string, password: string): Promise<User> {
+    const user = await this.repo.findByUsername(username);
+    if (!user) throw new Error("[UserService.login]: User not found");
+    if (user.password !== password) throw new Error("[UserService.login]: Invalid password");
+    return user;
+  }
 }

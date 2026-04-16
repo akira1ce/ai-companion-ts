@@ -20,6 +20,23 @@ export class SessionService {
     await this.repo.insert(session);
   }
 
+  /** 获取或创建会话（每个伴侣对每个用户仅一个会话） */
+  async getOrCreateSession(companionId: string, userId: string): Promise<Session> {
+    const existing = await this.repo.findByUserAndCompanion(userId, companionId);
+    if (existing) return existing;
+
+    const session: Session = {
+      id: crypto.randomUUID(),
+      companion_id: companionId,
+      user_id: userId,
+      title: "",
+      created_at: Date.now(),
+      updated_at: Date.now(),
+    };
+    await this.repo.insert(session);
+    return session;
+  }
+
   /** 获取用户下全部会话 */
   async getSessionsByUserId(userId: string): Promise<Session[]> {
     return this.repo.findByUserId(userId);

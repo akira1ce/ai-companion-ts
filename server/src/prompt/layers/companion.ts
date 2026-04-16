@@ -2,7 +2,7 @@ import { CompanionProfile } from "../type";
 import { User } from "@/domain/user/schema";
 
 /** 预设伴侣列表 */
-const COMPANION_PROFILES: CompanionProfile[] = [
+export const COMPANION_PROFILES: CompanionProfile[] = [
   {
     id: "xiaowei_001",
     name: "小薇",

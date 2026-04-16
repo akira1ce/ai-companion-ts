@@ -47,6 +47,16 @@ export class SessionRepository {
       .first<Session>();
   }
 
+  /** 按用户+伴侣查询唯一会话 */
+  async findByUserAndCompanion(userId: string, companionId: string): Promise<Session | null> {
+    return this.db
+      .prepare(
+        "SELECT id, companion_id, user_id, title, created_at, updated_at FROM sessions WHERE user_id = ? AND companion_id = ? LIMIT 1",
+      )
+      .bind(userId, companionId)
+      .first<Session>();
+  }
+
   /** 按用户查询全部会话 */
   async findByUserId(userId: string): Promise<Session[]> {
     const res = await this.db

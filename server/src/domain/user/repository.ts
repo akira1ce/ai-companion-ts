@@ -56,6 +56,16 @@ export class UserRepository {
       .run();
   }
 
+  /** 按用户名查询 */
+  async findByUsername(username: string): Promise<User | null> {
+    return this.db
+      .prepare(
+        `SELECT id, name, username, password, occupation, interests, recent_events, created_at, updated_at FROM users WHERE username = ?`,
+      )
+      .bind(username)
+      .first<User>();
+  }
+
   /** 按主键删除 */
   async deleteById(userId: string): Promise<void> {
     await this.db.prepare(`DELETE FROM users WHERE id = ?`).bind(userId).run();
