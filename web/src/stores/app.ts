@@ -12,7 +12,7 @@ export const useApp = create<AppState>()(
       user: null,
     }),
     {
-      name: "ai-companion-user",
+      name: "APP_STORE",
       storage: createJSONStorage(() => localStorage),
     },
   ),

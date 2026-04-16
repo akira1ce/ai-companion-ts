@@ -19,11 +19,8 @@ export async function getUser(userId: string): Promise<UserProfile> {
   return parseUserProfile(data);
 }
 
-export async function updateUser(
-  userId: string,
-  params: ApiUpdateUserReq,
-): Promise<UserProfile> {
-  await apiUpdateUser(userId, params);
-  const { data } = await apiGetUser(userId);
+export async function updateUser(params: ApiUpdateUserReq): Promise<UserProfile> {
+  await apiUpdateUser(params);
+  const { data } = await apiGetUser(params.userId);
   return parseUserProfile(data);
 }

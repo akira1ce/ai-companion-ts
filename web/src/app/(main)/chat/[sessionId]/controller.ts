@@ -8,7 +8,7 @@ export async function getMessages(
   page = 1,
   pageSize = 50,
 ): Promise<ChatMessage[]> {
-  const { data } = await apiGetMessages(sessionId, page, pageSize);
+  const { data } = await apiGetMessages({ sessionId, page, pageSize });
   return data.map((m) => ({
     id: m.id,
     role: m.role,

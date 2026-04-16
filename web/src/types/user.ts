@@ -12,6 +12,11 @@ export interface ApiUser {
   updated_at: number;
 }
 
+export interface ApiLoginReq {
+  username: string;
+  password: string;
+}
+
 export interface ApiCreateUserReq {
   name?: string;
   username: string;
@@ -22,6 +27,7 @@ export interface ApiCreateUserReq {
 }
 
 export interface ApiUpdateUserReq {
+  userId: string;
   name?: string;
   occupation?: string;
   interests?: string;

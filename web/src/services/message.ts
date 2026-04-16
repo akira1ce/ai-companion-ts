@@ -1,13 +1,12 @@
 /* 「service」 */
 
 import { http } from "@/lib/request";
-import type { ApiMessage } from "@/types";
+import type { ApiMessage, ApiGetMessagesReq } from "@/types";
 
 export const apiGetMessages = (
-  sessionId: string,
-  page = 1,
-  pageSize = 20,
+  params: ApiGetMessagesReq,
 ): Promise<{ data: ApiMessage[] }> => {
+  const { sessionId, page = 1, pageSize = 20 } = params;
   return http.get<ApiMessage[]>(`/api/messages/${sessionId}`, {
     params: { page: String(page), pageSize: String(pageSize) },
   });

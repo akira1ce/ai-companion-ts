@@ -26,7 +26,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const { data } = await apiLogin(values.username, values.password);
+      const { data } = await apiLogin(values);
       const profile: UserProfile = {
         id: data.id,
         name: data.name ?? "",

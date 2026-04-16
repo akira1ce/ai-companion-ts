@@ -10,6 +10,12 @@ export interface ApiMessage {
   created_at: number;
 }
 
+export interface ApiGetMessagesReq {
+  sessionId: string;
+  page?: number;
+  pageSize?: number;
+}
+
 export interface ApiMessageListRes {
   data: ApiMessage[];
 }

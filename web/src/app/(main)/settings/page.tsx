@@ -24,11 +24,11 @@ export default function SettingsPage() {
     { defaultData: null as never },
   );
 
-  const handleSave = async (params: ApiUpdateUserReq) => {
+  const handleSave = async (params: Omit<ApiUpdateUserReq, "userId">) => {
     if (!user) return;
     setSaving(true);
     try {
-      const updated = await updateUser(user.id, params);
+      const updated = await updateUser({ userId: user.id, ...params });
       appActions.setUser(updated);
       run();
     } finally {

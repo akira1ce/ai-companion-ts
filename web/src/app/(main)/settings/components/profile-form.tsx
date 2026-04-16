@@ -8,7 +8,7 @@ const { TextArea } = Input;
 interface ProfileFormProps {
   profile: UserProfile;
   saving: boolean;
-  onSave: (params: ApiUpdateUserReq) => void;
+  onSave: (params: Omit<ApiUpdateUserReq, "userId">) => void;
 }
 
 interface ProfileFormValues {
