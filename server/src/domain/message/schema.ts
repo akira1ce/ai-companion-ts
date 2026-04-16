@@ -7,4 +7,4 @@ export const messageSchema = z.object({
   content: z.string().describe("消息内容"),
   created_at: z.number().describe("创建时间"),
 });
-export type MessageDto = z.infer<typeof messageSchema>;
+export type Message = z.infer<typeof messageSchema>;

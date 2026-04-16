@@ -1,13 +1,15 @@
 import { Env } from "@/index";
-import { MessageDto } from "./schema";
+import { Message } from "./schema";
 
-/** 消息仓库 */
+/**
+ * 消息仓库：封装 D1 读写，对外只暴露领域类型。
+ */
 export class MessageRepository {
   constructor(private readonly db: Env["DB"]) {}
 
-  /** 创建消息 */
-  async insert(message: MessageDto) {
-    return this.db
+  /** 插入单条消息 */
+  async insert(message: Message): Promise<void> {
+    await this.db
       .prepare(
         "INSERT INTO messages (id, session_id, role, content, created_at) VALUES (?, ?, ?, ?, ?)",
       )
@@ -15,38 +17,45 @@ export class MessageRepository {
       .run();
   }
 
-  /** 批量创建消息 */
-  async insertBatch(messages: MessageDto[]) {
-    const segments = messages.map((message) => {
-      return this.db
+  /** 批量插入 */
+  async insertBatch(messages: Message[]): Promise<void> {
+    if (messages.length === 0) return;
+
+    const segments = messages.map((message) =>
+      this.db
         .prepare(
           "INSERT INTO messages (id, session_id, role, content, created_at) VALUES (?, ?, ?, ?, ?)",
         )
-        .bind(message.id, message.session_id, message.role, message.content, message.created_at);
-    });
+        .bind(message.id, message.session_id, message.role, message.content, message.created_at),
+    );
 
-    return this.db.batch<MessageDto>(segments);
+    await this.db.batch(segments);
   }
 
-  /** 删除消息 */
-  async deleteById(sessionId: string) {
-    return this.db.prepare("DELETE FROM messages WHERE session_id = ?").bind(sessionId).run();
+  /** 按会话删除全部消息 */
+  async deleteBySessionId(sessionId: string): Promise<void> {
+    await this.db.prepare("DELETE FROM messages WHERE session_id = ?").bind(sessionId).run();
   }
 
-  /** 获取会话消息 */
-  async findBySessionId(sessionId: string) {
-    return this.db
-      .prepare("SELECT * FROM messages WHERE session_id = ?")
+  /** 查询会话下全部消息 */
+  async findBySessionId(sessionId: string): Promise<Message[]> {
+    const res = await this.db
+      .prepare("SELECT id, session_id, role, content, created_at FROM messages WHERE session_id = ?")
       .bind(sessionId)
-      .all<MessageDto>();
+      .all<Message>();
+
+    return res.results;
   }
 
-  async findBySessionIdPage(sessionId: string, page: number, pageSize: number) {
-    return this.db
+  /** 分页查询会话消息（按创建时间倒序） */
+  async findBySessionIdPage(sessionId: string, page: number, pageSize: number): Promise<Message[]> {
+    const res = await this.db
       .prepare(
-        "SELECT * FROM messages WHERE session_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
+        "SELECT id, session_id, role, content, created_at FROM messages WHERE session_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
       )
       .bind(sessionId, pageSize, (page - 1) * pageSize)
-      .all<MessageDto>();
+      .all<Message>();
+
+    return res.results;
   }
 }

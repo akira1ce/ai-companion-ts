@@ -1,21 +1,25 @@
 import { Env } from "@/index";
-import { UserDto } from "./schema";
+import { User } from "./schema";
 
 /**
- * 用户仓库
- * 负责用户的读写操作 - d1 的读写
+ * 用户仓库：封装 D1 读写，对外只暴露领域类型。
  */
 export class UserRepository {
   constructor(private readonly db: Env["DB"]) {}
 
-  /** 获取用户信息 */
-  async findById(userId: string) {
-    return this.db.prepare(`SELECT * FROM users WHERE id = ?`).bind(userId).first<UserDto>();
+  /** 按主键查询 */
+  async findById(userId: string): Promise<User | null> {
+    return this.db
+      .prepare(
+        `SELECT id, name, username, password, occupation, interests, recent_events, created_at, updated_at FROM users WHERE id = ?`,
+      )
+      .bind(userId)
+      .first<User>();
   }
 
-  /** 创建用户 */
-  async insert(user: UserDto) {
-    return this.db
+  /** 插入用户 */
+  async insert(user: User): Promise<void> {
+    await this.db
       .prepare(
         `INSERT INTO users (id, name, username, password, occupation, interests, recent_events, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
@@ -33,9 +37,9 @@ export class UserRepository {
       .run();
   }
 
-  /** 更新用户信息 */
-  async update(user: UserDto) {
-    return this.db
+  /** 全量更新用户行 */
+  async update(user: User): Promise<void> {
+    await this.db
       .prepare(
         `UPDATE users SET name = ?, username = ?, password = ?, occupation = ?, interests = ?, recent_events = ?, updated_at = ? WHERE id = ?`,
       )
@@ -52,8 +56,8 @@ export class UserRepository {
       .run();
   }
 
-  /** 删除用户 */
-  async deleteById(userId: string) {
-    return this.db.prepare(`DELETE FROM users WHERE id = ?`).bind(userId).run();
+  /** 按主键删除 */
+  async deleteById(userId: string): Promise<void> {
+    await this.db.prepare(`DELETE FROM users WHERE id = ?`).bind(userId).run();
   }
 }

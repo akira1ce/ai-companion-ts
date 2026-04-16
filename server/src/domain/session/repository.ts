@@ -1,16 +1,15 @@
 import { Env } from "@/index";
-import { SessionDto } from "./schema";
+import { Session } from "./schema";
 
 /**
- * 会话仓库
- * 负责会话的读写操作 - d1 的读写
+ * 会话仓库：封装 D1 读写，对外只暴露领域类型。
  */
 export class SessionRepository {
   constructor(private readonly db: Env["DB"]) {}
 
-  /** 创建会话 */
-  async insert(session: SessionDto) {
-    return await this.db
+  /** 插入会话 */
+  async insert(session: Session): Promise<void> {
+    await this.db
       .prepare(
         "INSERT INTO sessions (id, companion_id, user_id, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
       )
@@ -25,40 +24,50 @@ export class SessionRepository {
       .run();
   }
 
-  /** 更新会话 */
-  async update(session: SessionDto) {
-    return await this.db
+  /** 更新会话标题与更新时间 */
+  async update(session: Session): Promise<void> {
+    await this.db
       .prepare("UPDATE sessions SET title = ?, updated_at = ? WHERE id = ?")
       .bind(session.title, session.updated_at, session.id)
       .run();
   }
 
-  /** 删除会话 */
-  async deleteById(id: string) {
-    return await this.db.prepare("DELETE FROM sessions WHERE id = ?").bind(id).run();
+  /** 按主键删除 */
+  async deleteById(id: string): Promise<void> {
+    await this.db.prepare("DELETE FROM sessions WHERE id = ?").bind(id).run();
   }
 
-  /** 获取会话 */
-  async findById(id: string) {
-    return await this.db
-      .prepare("SELECT * FROM sessions WHERE id = ?")
+  /** 按 ID 查询单条 */
+  async findById(id: string): Promise<Session | null> {
+    return this.db
+      .prepare(
+        "SELECT id, companion_id, user_id, title, created_at, updated_at FROM sessions WHERE id = ?",
+      )
       .bind(id)
-      .first<SessionDto>();
+      .first<Session>();
   }
 
-  /** 获取用户会话 */
-  async findByUserId(userId: string) {
-    return await this.db
-      .prepare("SELECT * FROM sessions WHERE user_id = ?")
+  /** 按用户查询全部会话 */
+  async findByUserId(userId: string): Promise<Session[]> {
+    const res = await this.db
+      .prepare(
+        "SELECT id, companion_id, user_id, title, created_at, updated_at FROM sessions WHERE user_id = ?",
+      )
       .bind(userId)
-      .all<SessionDto>();
+      .all<Session>();
+
+    return res.results;
   }
 
-  /** 获取用户会话分页 */
-  async findByUserIdPage(userId: string, page: number, pageSize: number) {
-    return await this.db
-      .prepare("SELECT * FROM sessions WHERE user_id = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?")
+  /** 按用户分页查询（按更新时间倒序） */
+  async findByUserIdPage(userId: string, page: number, pageSize: number): Promise<Session[]> {
+    const res = await this.db
+      .prepare(
+        "SELECT id, companion_id, user_id, title, created_at, updated_at FROM sessions WHERE user_id = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?",
+      )
       .bind(userId, pageSize, (page - 1) * pageSize)
-      .all<SessionDto>();
+      .all<Session>();
+
+    return res.results;
   }
 }

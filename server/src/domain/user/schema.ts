@@ -11,7 +11,7 @@ export const userSchema = z.object({
   created_at: z.number().describe("创建时间"),
   updated_at: z.number().describe("更新时间"),
 });
-export type UserDto = z.infer<typeof userSchema>;
+export type User = z.infer<typeof userSchema>;
 
 /** 创建用户 */
 export const createUserSchema = userSchema.omit({ id: true, created_at: true, updated_at: true });

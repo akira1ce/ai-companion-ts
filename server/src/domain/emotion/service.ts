@@ -4,7 +4,9 @@ import { calculateDecay } from "./utils/decay";
 import { EmotionFSM } from "./utils/fsm";
 import { IntimacySystem } from "./utils/intimacy";
 
-/** 情绪服务 */
+/**
+ * 情绪领域服务：FSM、亲密度与衰减编排，不涉及 KV 序列化。
+ */
 export class EmotionService {
   private fsm = new EmotionFSM();
   private intimacy = new IntimacySystem();
@@ -15,7 +17,7 @@ export class EmotionService {
   async getEmotion(sessionId: string): Promise<EmotionContext> {
     const ctx = await this.repo.findById(sessionId);
     if (!ctx) return EmotionFSM.initial();
-    return JSON.parse(ctx) as EmotionContext;
+    return ctx;
   }
 
   /** 折算离线时间的衰减 */
@@ -23,10 +25,8 @@ export class EmotionService {
     const ctx = await this.repo.findById(sessionId);
 
     if (!ctx) throw new Error("[EmotionService.applyDecay]: Emotion not found");
-    const parsed = JSON.parse(ctx) as EmotionContext;
 
-    const decayed = calculateDecay(parsed);
-    if (!decayed) throw new Error("[EmotionService.applyDecay]: Failed to apply decay");
+    const decayed = calculateDecay(ctx);
 
     await this.repo.insert(sessionId, decayed);
 
@@ -38,11 +38,9 @@ export class EmotionService {
     const ctx = await this.repo.findById(sessionId);
 
     if (!ctx) throw new Error("[EmotionService.transition]: Emotion not found");
-    const parsed = JSON.parse(ctx) as EmotionContext;
 
-    const { context: next } = this.fsm.transition(parsed, event);
+    const { context: next } = this.fsm.transition(ctx, event);
 
-    // 根据转移后的情绪状态更新亲密度
     const newIntimacy = this.intimacy.updateFromEmotion(next.intimacy, next.state);
 
     const final: EmotionContext = { ...next, intimacy: newIntimacy };

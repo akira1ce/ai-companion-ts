@@ -1,7 +1,7 @@
 import { MemoryRepository } from "./repository";
-import { MemoryDocument, MemoryMetadata, MemoryType, RetrieveQuery } from "./schema";
+import { MemoryDocument, RetrieveQuery } from "./schema";
 
-/** 融合权重接口 */
+/** 融合权重 */
 export interface FusionWeights {
   semantic: number;
   structured: number;
@@ -9,7 +9,6 @@ export interface FusionWeights {
   keyword: number;
 }
 
-/** 默认融合权重 */
 const DEFAULT_WEIGHTS: FusionWeights = {
   semantic: 0.35,
   structured: 0.3,
@@ -17,6 +16,9 @@ const DEFAULT_WEIGHTS: FusionWeights = {
   keyword: 0.15,
 };
 
+/**
+ * 记忆领域服务：多通道检索融合与写入编排，不涉及存储序列化细节。
+ */
 export class MemoryService {
   constructor(
     private readonly repo: MemoryRepository,
@@ -24,15 +26,14 @@ export class MemoryService {
   ) {}
 
   /** 写入记忆 */
-  async write(sessionId: string, docs: MemoryDocument[]) {
+  async write(sessionId: string, docs: MemoryDocument[]): Promise<void> {
     await this.repo.insertMemoryBatch(sessionId, docs);
   }
 
   /**
-   * 检索记忆
-   * 四通道检索，融合结果： 语义检索 + 结构化检索 + 摘要检索 + 关键词检索
+   * 四通道检索并融合：语义 + 结构化 + 摘要 + 关键词。
    */
-  async retrieve(query: RetrieveQuery) {
+  async retrieve(query: RetrieveQuery): Promise<MemoryDocument[]> {
     const [semantic, structured, summary, keyword] = await Promise.allSettled([
       this.semanticChannel(query),
       this.structuredChannel(query),
@@ -42,8 +43,7 @@ export class MemoryService {
 
     const results: Map<string, { doc: MemoryDocument; score: number }> = new Map();
 
-    // 合并结果
-    const merge = (docs: MemoryDocument[], weight: number) => {
+    const merge = (docs: MemoryDocument[], weight: number): void => {
       for (const doc of docs) {
         const base = doc.score ?? 0;
         const existing = results.get(doc.id);
@@ -55,7 +55,6 @@ export class MemoryService {
       }
     };
 
-    // 合并结果
     if (semantic.status === "fulfilled") merge(semantic.value, this.weights.semantic);
     if (structured.status === "fulfilled") merge(structured.value, this.weights.structured);
     if (summary.status === "fulfilled") merge(summary.value, this.weights.summary);
@@ -69,57 +68,21 @@ export class MemoryService {
 
   /** 语义检索 */
   async semanticChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
-    const res = await this.repo.findByVectorize(query.query, query.limit * 2);
-
-    return res.matches.map((item) => ({
-      id: item.id,
-      type: item.metadata?.type as MemoryType,
-      content: String(item.metadata?.content),
-      metadata: item.metadata as unknown as MemoryMetadata,
-      created_at: Number(item.metadata?.created_at),
-      score: item.score,
-    }));
+    return this.repo.findByVectorize(query.query, query.limit * 2);
   }
 
-  /** 结构化检索 */
+  /** 结构化检索（事件 + 关键词类型） */
   async structuredChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
-    const { results } = await this.repo.findByTypes(
-      query.sessionId,
-      ["event", "keyword"],
-      query.limit * 2,
-    );
-
-    return results.map((item) => ({
-      id: item.id,
-      type: item.type,
-      content: item.content,
-      metadata: JSON.parse(item.metadata || "{}") as MemoryMetadata,
-      created_at: item.created_at,
-    }));
+    return this.repo.findByTypes(query.sessionId, ["event", "keyword"], query.limit * 2);
   }
 
   /** 摘要检索 */
   async summaryChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
-    const { results } = await this.repo.findByTypes(query.sessionId, ["summary"], query.limit * 2);
-
-    return results.map((item) => ({
-      id: item.id,
-      type: item.type,
-      content: item.content,
-      metadata: JSON.parse(item.metadata || "{}") as MemoryMetadata,
-      created_at: item.created_at,
-    }));
+    return this.repo.findByTypes(query.sessionId, ["summary"], query.limit * 2);
   }
-  /** 关键词检索 */
-  async keywordChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
-    const { results } = await this.repo.findByTypes(query.sessionId, ["keyword"], query.limit * 2);
 
-    return results.map((item) => ({
-      id: item.id,
-      type: item.type,
-      content: item.content,
-      metadata: JSON.parse(item.metadata || "{}") as MemoryMetadata,
-      created_at: item.created_at,
-    }));
+  /** 关键词通道（与「结构化」类型部分重叠，保留为独立加权通道） */
+  async keywordChannel(query: RetrieveQuery): Promise<MemoryDocument[]> {
+    return this.repo.findByTypes(query.sessionId, ["keyword"], query.limit * 2);
   }
 }

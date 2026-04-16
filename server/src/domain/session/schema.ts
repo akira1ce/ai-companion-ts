@@ -8,4 +8,4 @@ export const sessionSchema = z.object({
   created_at: z.number().describe("创建时间"),
   updated_at: z.number().describe("更新时间"),
 });
-export type SessionDto = z.infer<typeof sessionSchema>;
+export type Session = z.infer<typeof sessionSchema>;

@@ -1,6 +1,6 @@
-import { UserDto } from "@/domain/user/schema";
+import { User } from "@/domain/user/schema";
 
-export function personaLayer(profile: UserDto): string {
+export function personaLayer(profile: User): string {
   const interests = profile.interests ?? "未知";
   const occupation = profile.occupation ?? "未知";
   const events = profile.recent_events ?? "暂无";
