@@ -14,7 +14,7 @@ export async function hydrateContextNode(
   const [context, user, emotion] = await Promise.allSettled([
     appCtx.contextService.getContext(state.sessionId),
     appCtx.userService.getUserById(state.userId),
-    appCtx.emotionService.getEmotion(state.sessionId),
+    appCtx.emotionService.applyDecay(state.sessionId),
   ]);
 
   const res: NodeResultType = {};
