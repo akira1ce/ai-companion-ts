@@ -3,7 +3,11 @@ import { ChatConfigType } from "../config";
 import { ChatStateType, NodeResultType } from "../state";
 import { getAppCtx } from "../util";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
-import { MemoryDocument } from "@/domain/memory/schema";
+import { MemoryDocument, memoryTypeSchema } from "@/domain/memory/schema";
+import { Message } from "@/domain/message/schema";
+import { AppCtx } from "@/lib/create-app-ctx";
+
+const VALID_TYPES = new Set(memoryTypeSchema.options);
 
 const extractMemoryPrompt = ChatPromptTemplate.fromMessages([
   [
@@ -40,14 +44,31 @@ const extractMemoryPrompt = ChatPromptTemplate.fromMessages([
   ["human", "对话记录：\n{conversation}\n\n请根据对话记录提取记忆。"],
 ]);
 
-export async function extractMemoryNode(
+/** 将本轮对话追加到 KV 短期记忆 context */
+async function updateShortTermContext(
+  appCtx: AppCtx,
   state: ChatStateType,
-  config: ChatConfigType,
-): Promise<NodeResultType> {
-  const appCtx = getAppCtx(config);
+): Promise<void> {
+  const { sessionId, message, reply, context } = state;
+  const now = Date.now();
 
+  const newMessages: Message[] = [
+    { id: crypto.randomUUID(), session_id: sessionId, role: "user", content: message, created_at: now },
+    { id: crypto.randomUUID(), session_id: sessionId, role: "assistant", content: reply, created_at: now + 1 },
+  ];
+
+  await appCtx.contextService.insertContext({
+    sessionId,
+    messages: [...(context?.messages ?? []), ...newMessages],
+  });
+}
+
+/** 抽取长期记忆并写入 D1（向量通道本地不可用，已注释） */
+async function extractAndWriteLongTermMemory(
+  appCtx: AppCtx,
+  state: ChatStateType,
+): Promise<void> {
   const { sessionId, reply, message } = state;
-
   const conversation = `user: ${message}\nassistant: ${reply}`;
 
   const chain = extractMemoryPrompt
@@ -56,10 +77,11 @@ export async function extractMemoryNode(
 
   const res = await chain.invoke({ conversation });
 
-  if (!Array.isArray(res)) return {};
+  if (!Array.isArray(res) || res.length === 0) return;
 
+  const now = Date.now();
   const docs: MemoryDocument[] = res
-    .filter((m) => m.content?.trim())
+    .filter((m) => m.content?.trim() && VALID_TYPES.has(m.type))
     .map((m) => ({
       id: crypto.randomUUID(),
       type: m.type,
@@ -68,14 +90,36 @@ export async function extractMemoryNode(
         sessionId,
         type: m.type,
         content: m.content.trim(),
-        created_at: Date.now(),
+        created_at: now,
         reply,
         message,
       },
-      created_at: Date.now(),
+      created_at: now,
     }));
 
-  appCtx.executionCtx.waitUntil(appCtx.memoryService.write(sessionId, docs));
+  if (docs.length === 0) return;
+
+  await appCtx.memoryService.write(sessionId, docs);
+}
+
+export async function extractMemoryNode(
+  state: ChatStateType,
+  config: ChatConfigType,
+): Promise<NodeResultType> {
+  const appCtx = getAppCtx(config);
+
+  appCtx.executionCtx.waitUntil(
+    Promise.allSettled([
+      updateShortTermContext(appCtx, state),
+      extractAndWriteLongTermMemory(appCtx, state),
+    ]).then((results) => {
+      for (const r of results) {
+        if (r.status === "rejected") {
+          console.error("[extractMemory] background task failed:", r.reason);
+        }
+      }
+    }),
+  );
 
   return {};
 }

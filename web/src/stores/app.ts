@@ -2,18 +2,14 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { UserProfile } from "@/types";
 
-interface UserState {
+interface AppState {
   user: UserProfile | null;
-  setUser: (user: UserProfile) => void;
-  clearUser: () => void;
 }
 
-export const useUserStore = create<UserState>()(
+export const useApp = create<AppState>()(
   persist(
-    (set) => ({
+    (): AppState => ({
       user: null,
-      setUser: (user) => set({ user }),
-      clearUser: () => set({ user: null }),
     }),
     {
       name: "ai-companion-user",
@@ -21,3 +17,10 @@ export const useUserStore = create<UserState>()(
     },
   ),
 );
+
+const set = useApp.setState;
+
+export const appActions = {
+  setUser: (user: UserProfile) => set({ user }),
+  clearUser: () => set({ user: null }),
+};

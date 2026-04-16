@@ -6,17 +6,17 @@ import { usePathname } from "next/navigation";
 import { Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { apiGetSessions, apiDeleteSession } from "@/services";
-import { useSessionStore, useUserStore } from "@/stores";
+import { useApp, useSession, sessionActions } from "@/stores";
 
 export function SessionList() {
   const pathname = usePathname();
-  const user = useUserStore((s) => s.user);
-  const { sessions, setSessions, removeSession } = useSessionStore();
+  const user = useApp((s) => s.user);
+  const sessions = useSession((s) => s.sessions);
 
   useEffect(() => {
     if (!user) return;
     apiGetSessions(user.id).then(({ data }) => {
-      setSessions(
+      sessionActions.setSessions(
         data.map((s) => ({
           id: s.id,
           companionId: s.companion_id,
@@ -25,13 +25,13 @@ export function SessionList() {
         })),
       );
     });
-  }, [user, setSessions]);
+  }, [user]);
 
   const handleDelete = async (e: React.MouseEvent, sessionId: string) => {
     e.preventDefault();
     e.stopPropagation();
     await apiDeleteSession(sessionId);
-    removeSession(sessionId);
+    sessionActions.removeSession(sessionId);
   };
 
   if (sessions.length === 0) {

@@ -2,17 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { Avatar, Button } from "antd";
-import { useUserStore } from "@/stores";
+import { useApp, appActions } from "@/stores";
 
 export function UserNav() {
   const router = useRouter();
-  const user = useUserStore((s) => s.user);
-  const clearUser = useUserStore((s) => s.clearUser);
+  const user = useApp((s) => s.user);
 
   if (!user) return null;
 
   const handleLogout = () => {
-    clearUser();
+    appActions.clearUser();
     router.replace("/login");
   };
 

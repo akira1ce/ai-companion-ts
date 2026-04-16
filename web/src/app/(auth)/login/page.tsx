@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button, Input, Form, Typography, Alert } from "antd";
 import { apiLogin } from "@/services";
-import { useUserStore } from "@/stores";
+import { appActions } from "@/stores";
 import type { UserProfile } from "@/types";
 
 const { Title } = Typography;
@@ -18,7 +18,6 @@ interface LoginFormValues {
 
 export default function LoginPage() {
   const router = useRouter();
-  const setUser = useUserStore((s) => s.setUser);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +35,7 @@ export default function LoginPage() {
         interests: data.interests ? JSON.parse(data.interests) : [],
         recentEvents: data.recent_events ? JSON.parse(data.recent_events) : [],
       };
-      setUser(profile);
+      appActions.setUser(profile);
       router.replace("/companions");
     } catch {
       setError("用户名或密码错误");

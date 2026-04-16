@@ -40,7 +40,11 @@ export class MemoryRepository {
   /**
    * 按类型从 D1 拉取记忆（已解析 metadata）。
    */
-  async findByTypes(sessionId: string, types: MemoryType[], limit: number): Promise<MemoryDocument[]> {
+  async findByTypes(
+    sessionId: string,
+    types: MemoryType[],
+    limit: number,
+  ): Promise<MemoryDocument[]> {
     if (types.length === 0) return [];
 
     const placeholders = types.map(() => "?").join(", ");
@@ -98,6 +102,7 @@ export class MemoryRepository {
 
   /**
    * 批量写入 D1 与 Vectorize。
+   * 任一通道失败时抛出聚合错误，调用方可据此决定是否重试。
    */
   async insertMemoryBatch(sessionId: string, docs: MemoryDocument[]): Promise<void> {
     if (docs.length === 0) return;
@@ -106,7 +111,7 @@ export class MemoryRepository {
     const vectorTasks: Promise<void>[] = [];
 
     for (const doc of docs) {
-      vectorTasks.push(this.insertVectorize(doc.id, doc));
+      // vectorTasks.push(this.insertVectorize(doc.id, doc));
       statements.push(
         this.db
           .prepare(
@@ -123,7 +128,14 @@ export class MemoryRepository {
       );
     }
 
-    await Promise.allSettled([this.db.batch(statements), ...vectorTasks]);
+    const results = await Promise.allSettled([this.db.batch(statements), ...vectorTasks]);
+    const errors = results
+      .filter((r): r is PromiseRejectedResult => r.status === "rejected")
+      .map((r) => r.reason);
+
+    if (errors.length > 0) {
+      throw new AggregateError(errors, `insertMemoryBatch failed (${errors.length} errors)`);
+    }
   }
 
   /**
@@ -171,9 +183,7 @@ export class MemoryRepository {
 
     const m = this.flattenVectorizeMetadata(raw);
     const sessionId = this.coerceString(m.sessionId);
-    const typeParsed = memoryTypeSchema.safeParse(
-      Array.isArray(m.type) ? m.type[0] : m.type,
-    );
+    const typeParsed = memoryTypeSchema.safeParse(Array.isArray(m.type) ? m.type[0] : m.type);
     const content = this.coerceString(m.content);
     const created_at = this.coerceNumber(m.created_at);
 
@@ -215,7 +225,9 @@ export class MemoryRepository {
     return out;
   }
 
-  private vectorizeMetadataFromDocument(doc: MemoryDocument): Record<string, string | number | boolean> {
+  private vectorizeMetadataFromDocument(
+    doc: MemoryDocument,
+  ): Record<string, string | number | boolean> {
     const flat: Record<string, string | number | boolean> = {
       sessionId: doc.metadata.sessionId,
       type: doc.metadata.type,

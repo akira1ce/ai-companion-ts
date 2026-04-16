@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Spin } from "antd";
-import { useUserStore } from "@/stores";
+import { useApp } from "@/stores";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const user = useUserStore((s) => s.user);
+  const user = useApp((s) => s.user);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -15,10 +15,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
      * zustand persist 从 localStorage 水合是异步的，
      * 需要等水合完成后再判断用户状态。
      */
-    const unsub = useUserStore.persist.onFinishHydration(() => {
+    const unsub = useApp.persist.onFinishHydration(() => {
       setHydrated(true);
     });
-    if (useUserStore.persist.hasHydrated()) {
+    if (useApp.persist.hasHydrated()) {
       setHydrated(true);
     }
     return unsub;

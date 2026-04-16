@@ -22,12 +22,9 @@ export class EmotionService {
 
   /** 折算离线时间的衰减 */
   async applyDecay(sessionId: string): Promise<EmotionContext> {
-    const ctx = await this.repo.findById(sessionId);
-
-    if (!ctx) throw new Error("[EmotionService.applyDecay]: Emotion not found");
+    const ctx = (await this.repo.findById(sessionId)) ?? EmotionFSM.initial();
 
     const decayed = calculateDecay(ctx);
-
     await this.repo.insert(sessionId, decayed);
 
     return decayed;
@@ -35,9 +32,7 @@ export class EmotionService {
 
   /** 收到用户消息后，触发情绪事件，更新状态和亲密度 */
   async transition(sessionId: string, event: EmotionEvent): Promise<EmotionContext> {
-    const ctx = await this.repo.findById(sessionId);
-
-    if (!ctx) throw new Error("[EmotionService.transition]: Emotion not found");
+    const ctx = (await this.repo.findById(sessionId)) ?? EmotionFSM.initial();
 
     const { context: next } = this.fsm.transition(ctx, event);
 

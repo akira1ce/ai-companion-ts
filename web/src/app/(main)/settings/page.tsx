@@ -1,16 +1,15 @@
 /* 「view」 */
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useQuery } from "@akira1ce/r-hooks";
-import { useUserStore } from "@/stores";
+import { useApp, appActions } from "@/stores";
 import { getUser, updateUser } from "./controller";
 import { ProfileForm } from "./components/profile-form";
 import type { ApiUpdateUserReq } from "@/types";
 
 export default function SettingsPage() {
-  const user = useUserStore((s) => s.user);
-  const setUser = useUserStore((s) => s.setUser);
+  const user = useApp((s) => s.user);
   const [saving, setSaving] = useState(false);
 
   const {
@@ -25,20 +24,17 @@ export default function SettingsPage() {
     { defaultData: null as never },
   );
 
-  const handleSave = useCallback(
-    async (params: ApiUpdateUserReq) => {
-      if (!user) return;
-      setSaving(true);
-      try {
-        const updated = await updateUser(user.id, params);
-        setUser(updated);
-        run();
-      } finally {
-        setSaving(false);
-      }
-    },
-    [user, setUser, run],
-  );
+  const handleSave = async (params: ApiUpdateUserReq) => {
+    if (!user) return;
+    setSaving(true);
+    try {
+      const updated = await updateUser(user.id, params);
+      appActions.setUser(updated);
+      run();
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="flex flex-1 flex-col p-6">

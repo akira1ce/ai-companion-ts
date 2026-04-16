@@ -18,7 +18,7 @@ export function MessageList({ messages, scrollRef, loading }: MessageListProps) 
         <p className="pt-20 text-center text-sm text-gray-400">开始和 TA 聊天吧</p>
       )}
       {/* 有消息时，显示消息列表 */}
-      {messages.length && (
+      {!!messages.length && (
         <div className="mx-auto flex max-w-2xl flex-col gap-3">
           {messages.map((msg) => (
             <MessageBubble key={msg.id} message={msg} />

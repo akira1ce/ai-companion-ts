@@ -1,36 +1,28 @@
 /* 「view」 */
 "use client";
 
-import { useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@akira1ce/r-hooks";
 import { apiCreateSession } from "@/services";
-import { useUserStore } from "@/stores";
+import { useApp } from "@/stores";
 import { getCompanions } from "./controller";
 import { CompanionCard } from "./components/companion-card";
 
 export default function CompanionsPage() {
   const router = useRouter();
-  const user = useUserStore((s) => s.user);
+  const user = useApp((s) => s.user);
   const { data: companions, loading } = useQuery(getCompanions, {
     defaultData: [],
   });
 
-  useEffect(() => {
-    console.log("akira.122131", 122131);
-  }, []);
-
-  const handleSelect = useCallback(
-    async (companionId: string) => {
-      if (!user) return;
-      const { data: session } = await apiCreateSession({
-        userId: user.id,
-        companionId,
-      });
-      router.push(`/chat/${session.id}`);
-    },
-    [user],
-  );
+  const handleSelect = async (companionId: string) => {
+    if (!user) return;
+    const { data: session } = await apiCreateSession({
+      userId: user.id,
+      companionId,
+    });
+    router.push(`/chat/${session.id}`);
+  };
 
   return (
     <div className="flex flex-1 flex-col p-6">
