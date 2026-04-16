@@ -5,9 +5,7 @@ import { usePathname } from "next/navigation";
 import { SessionList } from "./session-list";
 import { UserNav } from "./user-nav";
 
-const NAV_ITEMS = [
-  { href: "/companions", label: "伴侣" },
-] as const;
+const NAV_ITEMS = [{ href: "/companions", label: "伴侣" }] as const;
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -20,7 +18,7 @@ export function Sidebar() {
         </Link>
       </div>
 
-      <nav className="shrink-0 space-y-0.5 p-2">
+      {/* <nav className="shrink-0 space-y-0.5 p-2">
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.href}
@@ -31,9 +29,9 @@ export function Sidebar() {
             {item.label}
           </Link>
         ))}
-      </nav>
+      </nav> */}
 
-      <div className="flex shrink-0 items-center px-4 py-2">
+      <div className="flex shrink-0 items-center p-4">
         <span className="text-xs font-medium text-gray-400">会话</span>
       </div>
 
