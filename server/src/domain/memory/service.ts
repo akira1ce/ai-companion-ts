@@ -1,5 +1,5 @@
 import { MemoryRepository } from "./repository";
-import { MemoryDocument, MemoryMetadata, MemoryType, RetrieveQuery } from "./type";
+import { MemoryDocument, MemoryMetadata, MemoryType, RetrieveQuery } from "./schema";
 
 /** 融合权重接口 */
 export interface FusionWeights {

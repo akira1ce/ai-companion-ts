@@ -1,6 +1,6 @@
 import { Env } from "../..";
 import { Embeddings } from "../../llm/embeddings";
-import { MemoryDocument, MemoryDTO, MemoryType } from "./type";
+import { MemoryDocument, MemoryDto, MemoryType } from "./schema";
 
 /**
  * 记忆仓库
@@ -30,7 +30,7 @@ export class MemoryRepository {
          LIMIT ?`,
       )
       .bind(sessionId, limit)
-      .all<MemoryDTO>();
+      .all<MemoryDto>();
   }
 
   /** 关键词全文检索 */
@@ -50,7 +50,7 @@ export class MemoryRepository {
          LIMIT ?`,
       )
       .bind(sessionId, ...bindings, limit)
-      .all<MemoryDTO>();
+      .all<MemoryDto>();
   }
 
   /** 单条写入向量 */

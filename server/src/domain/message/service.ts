@@ -1,5 +1,5 @@
 import { MessageRepository } from "./repository";
-import { MessageDto } from "./type";
+import { MessageDto } from "./schema";
 
 /** 消息服务 */
 export class MessageService {

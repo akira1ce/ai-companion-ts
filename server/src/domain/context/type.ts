@@ -1,4 +1,4 @@
-import { MessageDto } from "../message/type";
+import { MessageDto } from "../message/schema";
 
 export interface Context {
   sessionId: string;

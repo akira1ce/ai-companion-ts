@@ -1,4 +1,4 @@
-import { EmotionState } from "../type";
+import { EmotionState } from "../schema";
 
 // 每种情绪状态对亲密度的影响（每次触发事件后累加）
 const INTIMACY_DELTAS: Record<EmotionState, number> = {

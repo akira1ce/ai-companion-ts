@@ -3,7 +3,7 @@ import { ChatConfigType } from "../config";
 import { ChatStateType, NodeResultType } from "../state";
 import { getAppCtx } from "../util";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
-import { MemoryDocument } from "@/domain/memory/type";
+import { MemoryDocument } from "@/domain/memory/schema";
 
 const extractMemoryPrompt = ChatPromptTemplate.fromMessages([
   [

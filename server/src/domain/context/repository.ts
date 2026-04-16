@@ -7,7 +7,8 @@ export class ContextRepository {
 
   /** 获取上下文 */
   async findById(sessionId: string) {
-    return await this.kv.get(`context:${sessionId}`);
+    const raw = await this.kv.get(`context:${sessionId}`);
+    return JSON.parse(raw ?? "{}") as Context;
   }
 
   /** 设置上下文 */

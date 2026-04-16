@@ -1,5 +1,5 @@
-import { Env } from "../..";
-import { SessionDto } from "./type";
+import { Env } from "@/index";
+import { SessionDto } from "./schema";
 
 /**
  * 会话仓库

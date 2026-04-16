@@ -1,4 +1,5 @@
 import { SessionRepository } from "./repository";
+import { SessionDto } from "./schema";
 
 /**
  * 会话服务
@@ -9,7 +10,7 @@ export class SessionService {
 
   /** 创建会话 */
   async createSession(companionId: string, userId: string) {
-    const session = {
+    const session: SessionDto = {
       id: crypto.randomUUID(),
       companion_id: companionId,
       user_id: userId,

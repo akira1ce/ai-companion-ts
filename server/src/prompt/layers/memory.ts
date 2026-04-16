@@ -1,4 +1,4 @@
-import { MemoryDocument } from "@/domain/memory/type";
+import { MemoryDocument } from "@/domain/memory/schema";
 
 export function memoryLayer(memories: MemoryDocument[]): string {
   if (memories.length === 0) return "";

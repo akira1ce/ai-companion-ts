@@ -1,4 +1,4 @@
-import type { EmotionContext } from "./type";
+import type { EmotionContext } from "./schema";
 import { Env } from "@/index";
 
 /** 情绪仓库 */

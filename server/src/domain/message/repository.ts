@@ -1,5 +1,5 @@
 import { Env } from "@/index";
-import { MessageDto } from "./type";
+import { MessageDto } from "./schema";
 
 /** 消息仓库 */
 export class MessageRepository {

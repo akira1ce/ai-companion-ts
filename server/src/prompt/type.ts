@@ -1,6 +1,6 @@
-import { EmotionContext } from "@/domain/emotion/type";
-import { MemoryDocument } from "@/domain/memory/type";
-import { UserSchema } from "@/domain/user/type";
+import { EmotionContext } from "@/domain/emotion/schema";
+import { MemoryDocument } from "@/domain/memory/schema";
+import { UserDto } from "@/domain/user/schema";
 
 export interface CompanionProfile {
   /** 伴侣ID */
@@ -21,7 +21,7 @@ export interface PromptContext {
   /** 伴侣ID */
   companionId: string;
   /** 用户信息 */
-  userProfile: UserSchema;
+  userProfile: UserDto;
   /** 情绪状态 */
   emotion: EmotionContext;
   /** 记忆 */

@@ -8,7 +8,7 @@ export class ContextService {
   /** 获取上下文 */
   async getContext(sessionId: string): Promise<Context> {
     const raw = await this.repo.findById(sessionId);
-    return JSON.parse(raw ?? "{}") as Context;
+    return raw;
   }
 
   /** 插入上下文 */

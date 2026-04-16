@@ -1,5 +1,5 @@
 import { EmotionRepository } from "./repository";
-import { EmotionContext, EmotionEvent } from "./type";
+import { EmotionContext, EmotionEvent } from "./schema";
 import { calculateDecay } from "./utils/decay";
 import { EmotionFSM } from "./utils/fsm";
 import { IntimacySystem } from "./utils/intimacy";

@@ -1,5 +1,5 @@
 import { Env } from "@/index";
-import { UserDto } from "./type";
+import { UserDto } from "./schema";
 
 /**
  * 用户仓库
@@ -27,8 +27,8 @@ export class UserRepository {
         user.occupation,
         user.interests,
         user.recent_events,
-        Date.now(),
-        Date.now(),
+        user.created_at,
+        user.updated_at,
       )
       .run();
   }
@@ -46,7 +46,7 @@ export class UserRepository {
         user.occupation,
         user.interests,
         user.recent_events,
-        Date.now(),
+        user.updated_at,
         user.id,
       )
       .run();

@@ -4,7 +4,7 @@ import { getAppCtx } from "../util";
 import { NodeResultType } from "../state";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
-import { EmotionEvent } from "@/domain/emotion/type";
+import { EmotionEvent } from "@/domain/emotion/schema";
 
 interface ClassifyEmotionOutput {
   event: EmotionEvent | null;

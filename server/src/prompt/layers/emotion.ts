@@ -1,4 +1,4 @@
-import { EmotionContext } from "@/domain/emotion/type";
+import { EmotionContext } from "@/domain/emotion/schema";
 
 const EMOTION_DESCRIPTIONS: Record<string, { style: string; examples: string }> = {
   calm: {

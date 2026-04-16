@@ -1,9 +1,9 @@
-import { UserSchema } from "@/domain/user/type";
+import { UserDto } from "@/domain/user/schema";
 
-export function personaLayer(profile: UserSchema): string {
-  const interests = profile.interests?.join("、") ?? "未知";
+export function personaLayer(profile: UserDto): string {
+  const interests = profile.interests ?? "未知";
   const occupation = profile.occupation ?? "未知";
-  const events = profile.recent_events?.join("；") ?? "暂无";
+  const events = profile.recent_events ?? "暂无";
 
   return [
     `【用户信息】`,

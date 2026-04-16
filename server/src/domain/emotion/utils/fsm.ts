@@ -1,4 +1,4 @@
-import { EmotionState, EmotionEvent, EmotionContext } from "../type";
+import { EmotionState, EmotionEvent, EmotionContext } from "../schema";
 
 export interface TransitionResult {
   context: EmotionContext;
