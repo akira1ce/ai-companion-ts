@@ -18,7 +18,7 @@ export function ChatHeader({ companion, emotion }: ChatHeaderProps) {
   const emoji = emotion ? (EMOTION_EMOJI[emotion.state] ?? "\u{1F60C}") : null;
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-zinc-100 px-4">
+    <header className="flex h-14 shrink-0 items-center gap-3 shadow px-4">
       {companion ? (
         <>
           <div className="relative">

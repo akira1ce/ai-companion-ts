@@ -94,7 +94,7 @@ export default function ChatPage({ params }: ChatPageProps) {
   };
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex h-full flex-1 flex-col overflow-hidden">
       <ChatHeader companion={companion} emotion={emotion} />
 
       <MessageList messages={messages} scrollRef={scrollRef} loading={loading} />

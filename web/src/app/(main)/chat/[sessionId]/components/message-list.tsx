@@ -12,7 +12,7 @@ interface MessageListProps {
 
 export function MessageList({ messages, scrollRef, loading }: MessageListProps) {
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto p-4">
+    <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto p-4">
       {/* 没有消息时，显示提示 */}
       {!messages.length && (
         <p className="pt-20 text-center text-sm text-gray-400">开始和 TA 聊天吧</p>
