@@ -1,8 +1,9 @@
-import { Env } from "@/index";
-import { COMPANION_PROFILES } from "@/prompt/layers/companion";
 import { Hono } from "hono";
+import type { AppEnv } from "@/type";
+import { ok } from "@/lib/response";
+import { COMPANION_PROFILES } from "@/prompt/layers/companion";
 
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono<AppEnv>();
 
 app.get("/", (c) => {
   const companions = COMPANION_PROFILES.map(({ id, name, personality }) => ({
@@ -10,7 +11,7 @@ app.get("/", (c) => {
     name,
     personality,
   }));
-  return c.json({ data: companions });
+  return ok(c, companions);
 });
 
 export default app;

@@ -11,12 +11,14 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.48",
+    "@hono/zod-validator": "^0.7.6",
     "@langchain/core": "^1.1.36",
     "@langchain/langgraph": "^1.2.6",
     "@langchain/openai": "^0.6.16",
     "ai": "^6.0.141",
     "hono": "^4.7.11",
-    "langsmith": "^0.5.15"
+    "langsmith": "^0.5.15",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250724.0",

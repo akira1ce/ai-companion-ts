@@ -1,23 +1,26 @@
-import { Env } from "@/index";
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+import type { AppEnv } from "@/type";
+import { ok, validationHook } from "@/lib/response";
 import { MessageService } from "@/domain/message/service";
 import { MessageRepository } from "@/domain/message/repository";
-import { Hono } from "hono";
 
-const app = new Hono<{ Bindings: Env }>();
+const paginationQuery = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+});
+
+const app = new Hono<AppEnv>();
 
 /** 分页获取会话消息（按创建时间倒序） */
-app.get("/:sessionId", async (c) => {
+app.get("/:sessionId", zValidator("query", paginationQuery, validationHook), async (c) => {
   const sessionId = c.req.param("sessionId");
-  const page = Number(c.req.query("page") ?? "1");
-  const pageSize = Number(c.req.query("pageSize") ?? "20");
-
-  if (page < 1 || pageSize < 1 || pageSize > 100) {
-    return c.json({ error: "Invalid pagination params" }, 400);
-  }
+  const { page, pageSize } = c.req.valid("query");
 
   const messageService = new MessageService(new MessageRepository(c.env.DB));
   const messages = await messageService.getMessagesBySessionPage(sessionId, page, pageSize);
-  return c.json({ data: messages });
+  return ok(c, messages);
 });
 
 export default app;
