@@ -1,13 +1,13 @@
 /* 「controller」 */
 
-import { apiGetMessages, apiSendMessage } from "@/services";
-import type { ChatMessage, ApiChatReq, ApiEmotion } from "@/types";
+import { apiGetMessages, apiSendMessage } from "./service";
+import type { MessageSchema, ApiChatReq, EmotionDto } from "./type";
 
 export async function getMessages(
   sessionId: string,
   page = 1,
   pageSize = 50,
-): Promise<ChatMessage[]> {
+): Promise<MessageSchema[]> {
   const { data } = await apiGetMessages({ sessionId, page, pageSize });
   return data.map((m) => ({
     id: m.id,
@@ -19,7 +19,7 @@ export async function getMessages(
 
 export async function sendMessage(
   params: ApiChatReq,
-): Promise<{ reply: string; emotion: ApiEmotion | null }> {
+): Promise<{ reply: string; emotion: EmotionDto | null }> {
   const { data } = await apiSendMessage(params);
   return data;
 }

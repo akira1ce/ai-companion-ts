@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { UserProfile } from "@/types";
+import type { UserDto } from "@/app/(main)/settings/type";
 
 interface AppState {
-  user: UserProfile | null;
+  user: UserDto | null;
 }
 
 export const useApp = create<AppState>()(
@@ -21,6 +21,6 @@ export const useApp = create<AppState>()(
 const set = useApp.setState;
 
 export const appActions = {
-  setUser: (user: UserProfile) => set({ user }),
+  setUser: (user: UserDto) => set({ user }),
   clearUser: () => set({ user: null }),
 };

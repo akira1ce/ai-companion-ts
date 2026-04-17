@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button, Input, Form, Typography, Alert } from "antd";
-import { apiRegister } from "@/services";
+import { apiRegister } from "../service";
 
 const { Title } = Typography;
 

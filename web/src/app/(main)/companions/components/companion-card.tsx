@@ -1,12 +1,12 @@
 "use client";
 
 import { Card, Avatar, Typography } from "antd";
-import type { CompanionItem } from "@/types";
+import type { CompanionSchema } from "../type";
 
 const { Text, Paragraph } = Typography;
 
 interface CompanionCardProps {
-  companion: CompanionItem;
+  companion: CompanionSchema;
   onSelect: (id: string) => void;
 }
 

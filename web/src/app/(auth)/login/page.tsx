@@ -5,9 +5,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button, Input, Form, Typography, Alert } from "antd";
-import { apiLogin } from "@/services";
+import { apiLogin } from "../service";
 import { appActions } from "@/stores";
-import type { UserProfile } from "@/types";
 
 const { Title } = Typography;
 
@@ -27,15 +26,7 @@ export default function LoginPage() {
 
     try {
       const { data } = await apiLogin(values);
-      const profile: UserProfile = {
-        id: data.id,
-        name: data.name ?? "",
-        username: data.username,
-        occupation: data.occupation ?? "",
-        interests: data.interests ?? "",
-        recentEvents: data.recent_events ?? "",
-      };
-      appActions.setUser(profile);
+      appActions.setUser(data);
       router.replace("/companions");
     } catch {
       setError("用户名或密码错误");

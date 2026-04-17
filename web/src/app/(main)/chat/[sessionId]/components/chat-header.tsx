@@ -1,8 +1,9 @@
-import type { CompanionItem, ApiEmotion } from "@/types";
+import type { CompanionSchema } from "@/app/(main)/companions/type";
+import type { EmotionDto } from "../type";
 
 interface ChatHeaderProps {
-  companion: CompanionItem | null;
-  emotion: ApiEmotion | null;
+  companion: CompanionSchema | null;
+  emotion: EmotionDto | null;
 }
 
 const EMOTION_EMOJI: Record<string, string> = {

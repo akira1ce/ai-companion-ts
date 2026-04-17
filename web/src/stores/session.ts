@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import type { SessionItem } from "@/types";
+import type { SessionSchema } from "@/app/(main)/companions/type";
 
 interface SessionState {
-  sessions: SessionItem[];
+  sessions: SessionSchema[];
   activeSessionId: string | null;
 }
 
@@ -14,11 +14,11 @@ export const useSession = create<SessionState>(() => ({
 const set = useSession.setState;
 
 export const sessionActions = {
-  setSessions: (sessions: SessionItem[]) => set({ sessions }),
+  setSessions: (sessions: SessionSchema[]) => set({ sessions }),
 
   setActiveSessionId: (id: string | null) => set({ activeSessionId: id }),
 
-  addSession: (session: SessionItem) =>
+  addSession: (session: SessionSchema) =>
     set((state) => ({ sessions: [session, ...state.sessions] })),
 
   removeSession: (id: string) =>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import { apiGetSessions, apiDeleteSession } from "@/services";
+import { apiGetSessions, apiDeleteSession } from "@/app/(main)/companions/service";
 import { useApp, useSession, sessionActions } from "@/stores";
 
 export function SessionList() {

@@ -2,10 +2,10 @@
 
 import type { RefObject } from "react";
 import { MessageBubble } from "./message-bubble";
-import type { ChatMessage } from "@/types";
+import type { MessageSchema } from "../type";
 
 interface MessageListProps {
-  messages: ChatMessage[];
+  messages: MessageSchema[];
   scrollRef: RefObject<HTMLDivElement | null>;
   loading: boolean;
 }

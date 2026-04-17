@@ -7,7 +7,7 @@ import { getMessages, sendMessage } from "./controller";
 import { MessageList } from "./components/message-list";
 import { ChatInput } from "./components/chat-input";
 import { ChatHeader } from "./components/chat-header";
-import type { ChatMessage, ApiEmotion } from "@/types";
+import type { MessageSchema, EmotionDto } from "./type";
 import { useQuery } from "@akira1ce/r-hooks";
 import { getCompanions } from "@/app/(main)/companions/controller";
 
@@ -22,8 +22,8 @@ export default function ChatPage({ params }: ChatPageProps) {
   const sessions = useSession((s) => s.sessions);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [emotion, setEmotion] = useState<ApiEmotion | null>(null);
+  const [messages, setMessages] = useState<MessageSchema[]>([]);
+  const [emotion, setEmotion] = useState<EmotionDto | null>(null);
   const [loading, setLoading] = useState(false);
 
   const { data: companions } = useQuery(getCompanions, { defaultData: [] });
@@ -61,7 +61,7 @@ export default function ChatPage({ params }: ChatPageProps) {
     const companionId = useSession.getState().sessions.find((s) => s.id === sessionId)?.companionId;
     if (!companionId) return;
 
-    const userMsg: ChatMessage = {
+    const userMsg: MessageSchema = {
       id: crypto.randomUUID(),
       role: "user",
       content: text,
@@ -79,7 +79,7 @@ export default function ChatPage({ params }: ChatPageProps) {
         message: text,
       });
 
-      const assistantMsg: ChatMessage = {
+      const assistantMsg: MessageSchema = {
         id: crypto.randomUUID(),
         role: "assistant",
         content: data.reply,

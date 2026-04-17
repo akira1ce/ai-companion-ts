@@ -3,7 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { useQuery } from "@akira1ce/r-hooks";
-import { apiCreateSession } from "@/services";
+import { apiCreateSession } from "./service";
 import { useApp } from "@/stores";
 import { getCompanions } from "./controller";
 import { CompanionCard } from "./components/companion-card";

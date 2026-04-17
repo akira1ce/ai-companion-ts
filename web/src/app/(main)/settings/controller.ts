@@ -1,26 +1,15 @@
 /* 「controller」 */
 
-import { apiGetUser, apiUpdateUser } from "@/services";
-import type { UserProfile, ApiUpdateUserReq, ApiUser } from "@/types";
+import { apiGetUser, apiUpdateUser } from "./service";
+import type { ApiUpdateUserReq, UserDto } from "./type";
 
-function parseUserProfile(data: ApiUser): UserProfile {
-  return {
-    id: data.id,
-    name: data.name ?? "",
-    username: data.username,
-    occupation: data.occupation ?? "",
-    interests: data.interests ? JSON.parse(data.interests) : [],
-    recentEvents: data.recent_events ? JSON.parse(data.recent_events) : [],
-  };
-}
-
-export async function getUser(userId: string): Promise<UserProfile> {
+export async function getUser(userId: string): Promise<UserDto> {
   const { data } = await apiGetUser(userId);
-  return parseUserProfile(data);
+  return data;
 }
 
-export async function updateUser(params: ApiUpdateUserReq): Promise<UserProfile> {
+export async function updateUser(params: ApiUpdateUserReq): Promise<UserDto> {
   await apiUpdateUser(params);
   const { data } = await apiGetUser(params.userId);
-  return parseUserProfile(data);
+  return data;
 }

@@ -1,6 +1,12 @@
 /* 「service-type」 */
 
-export interface ApiSession {
+export interface CompanionDto {
+  id: string;
+  name: string;
+  personality: string[];
+}
+
+export interface SessionDto {
   id: string;
   companion_id: string;
   user_id: string;
@@ -14,17 +20,15 @@ export interface ApiCreateSessionReq {
   companionId: string;
 }
 
-export interface ApiSessionListRes {
-  data: ApiSession[];
-}
-
-export interface ApiSessionRes {
-  data: ApiSession;
-}
-
 /* 「controller-type」 */
 
-export interface SessionItem {
+export interface CompanionSchema {
+  id: string;
+  name: string;
+  personality: string;
+}
+
+export interface SessionSchema {
   id: string;
   companionId: string;
   title: string;

@@ -6,7 +6,7 @@ import { useQuery } from "@akira1ce/r-hooks";
 import { useApp, appActions } from "@/stores";
 import { getUser, updateUser } from "./controller";
 import { ProfileForm } from "./components/profile-form";
-import type { ApiUpdateUserReq } from "@/types";
+import type { ApiUpdateUserReq } from "./type";
 
 export default function SettingsPage() {
   const user = useApp((s) => s.user);

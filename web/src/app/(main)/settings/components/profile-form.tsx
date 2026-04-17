@@ -1,12 +1,12 @@
 "use client";
 
 import { Button, Input, Form } from "antd";
-import type { UserProfile, ApiUpdateUserReq } from "@/types";
+import type { UserDto, ApiUpdateUserReq } from "../type";
 
 const { TextArea } = Input;
 
 interface ProfileFormProps {
-  profile: UserProfile;
+  profile: UserDto;
   saving: boolean;
   onSave: (params: Omit<ApiUpdateUserReq, "userId">) => void;
 }
@@ -37,7 +37,7 @@ export function ProfileForm({ profile, saving, onSave }: ProfileFormProps) {
         name: profile.name,
         occupation: profile.occupation,
         interests: profile.interests,
-        recentEvents: profile.recentEvents,
+        recentEvents: profile.recent_events,
       }}
       className="max-w-md">
       <Form.Item label="账号" name="username">
