@@ -20,7 +20,7 @@ export function SessionList() {
         data.map((s) => ({
           id: s.id,
           companionId: s.companion_id,
-          title: s.title || "新会话",
+          title: s.title || s.companion_id.split("_")[0] || "新会话",
           updatedAt: s.updated_at,
         })),
       );
@@ -35,9 +35,7 @@ export function SessionList() {
   };
 
   if (sessions.length === 0) {
-    return (
-      <p className="px-3 py-2 text-xs text-gray-400">暂无会话</p>
-    );
+    return <p className="px-3 py-2 text-xs text-gray-400">暂无会话</p>;
   }
 
   return (
@@ -51,8 +49,7 @@ export function SessionList() {
             href={href}
             className={`group flex items-center justify-between rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-gray-200 ${
               active ? "bg-gray-200 font-medium" : ""
-            }`}
-          >
+            }`}>
             <span className="truncate">{session.title}</span>
             <Button
               type="text"
